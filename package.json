@@ -23,6 +23,8 @@
   },
   "homepage": "https://github.com/elo7/tag-amd#readme",
   "devDependencies": {
-    "bower": "^1.7.9"
+    "bower": "1.7.9",
+    "codeceptjs": "0.4.5",
+    "phantomjs-prebuilt": "2.1.12"
   }
 }

@@ -1,0 +1,28 @@
+{
+  "name": "tag-amd",
+  "version": "1.0.0",
+  "description": "Transform an input into a tag field",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/elo7/tag-amd.git"
+  },
+  "keywords": [
+    "js",
+    "tags",
+    "form",
+    "input"
+  ],
+  "author": "Elo7",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/elo7/tag-amd/issues"
+  },
+  "homepage": "https://github.com/elo7/tag-amd#readme",
+  "devDependencies": {
+    "bower": "^1.7.9"
+  }
+}

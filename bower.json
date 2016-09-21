@@ -1,0 +1,23 @@
+{
+  "name": "tag-amd",
+  "description": "Transform an input into a tag field",
+  "main": "index.js",
+  "authors": [
+    "Elo7"
+  ],
+  "license": "BSD-3-Clause",
+  "keywords": [
+    "js",
+    "tags",
+    "form",
+    "input"
+  ],
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

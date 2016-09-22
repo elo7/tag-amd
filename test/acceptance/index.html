@@ -17,7 +17,8 @@
 	<script src="tag.js"></script>
 
 	<script>
-		var COMMA = 188;
+		var COMMA = 188,
+			ENTER = 13;
 		var type = function(element, keyCode) {
 			var evt;
 			try {
@@ -91,6 +92,18 @@
 					var tagsBefore = tagged.tags();
 					assert.lengthEquals(tagsBefore, 0);
 					type(input.first(), COMMA);
+					var tagsAfter = tagged.tags();
+					assert.include(tagsAfter, 'tag1');
+					assert.lengthEquals(tagsAfter, 1);
+				});
+
+				it('should create a new tag when enter is typed', function() {
+					input.val('');
+					var tagged = tag.tagify('#tags');
+					input.val('tag1');
+					var tagsBefore = tagged.tags();
+					assert.lengthEquals(tagsBefore, 0);
+					type(input.first(), ENTER);
 					var tagsAfter = tagged.tags();
 					assert.include(tagsAfter, 'tag1');
 					assert.lengthEquals(tagsAfter, 1);

@@ -3,7 +3,9 @@ define('tag', ['doc'], function($) {
 
 	var Tag = function(element) {
 		this.tags = function() {
-			return [element.val()];
+			return element.val().split(/\s*,\s*/).filter(function(tag) {
+				return tag.length > 0;
+			});
 		};
 	};
 

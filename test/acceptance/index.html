@@ -25,8 +25,42 @@
 					$('#tags').val('tag1');
 					const tagged = tag.tagify('#tags');
 					const tags = tagged.tags();
-					assert.lengthEquals(tags, 1);
 					assert.include(tags, 'tag1');
+					assert.lengthEquals(tags, 1);
+				});
+				it('should create two tags from a filled input, splitted with comma', function() {
+					$('#tags').val('tag1,another-tag');
+					const tagged = tag.tagify('#tags');
+					const tags = tagged.tags();
+					assert.include(tags, 'tag1');
+					assert.include(tags, 'another-tag');
+					assert.lengthEquals(tags, 2);
+				});
+				it('should create two tags from a filled input, splitted with a spaced comma', function() {
+					$('#tags').val('tag1, another-tag');
+					const tagged = tag.tagify('#tags');
+					const tags = tagged.tags();
+					assert.include(tags, 'tag1');
+					assert.include(tags, 'another-tag');
+					assert.lengthEquals(tags, 2);
+				});
+				it('should create two tags from a filled input, one of them with spaces, splitted with a spaced comma', function() {
+					$('#tags').val('tag1, another tag');
+					const tagged = tag.tagify('#tags');
+					const tags = tagged.tags();
+					assert.include(tags, 'tag1');
+					assert.include(tags, 'another tag');
+					assert.lengthEquals(tags, 2);
+				});
+				it('should create some tags from a filled input, removing empty tags', function() {
+					$('#tags').val('tag1, another tag, tag2,, another another , ,');
+					const tagged = tag.tagify('#tags');
+					const tags = tagged.tags();
+					assert.include(tags, 'tag1');
+					assert.include(tags, 'another tag');
+					assert.include(tags, 'tag2');
+					assert.include(tags, 'another another');
+					assert.lengthEquals(tags, 4);
 				});
 			})
 		});

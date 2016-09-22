@@ -18,7 +18,8 @@
 
 	<script>
 		var COMMA = 188,
-			ENTER = 13;
+			ENTER = 13,
+			BACKSPACE = 8;
 		var type = function(element, keyCode) {
 			var evt;
 			try {
@@ -107,6 +108,27 @@
 					var tagsAfter = tagged.tags();
 					assert.include(tagsAfter, 'tag1');
 					assert.lengthEquals(tagsAfter, 1);
+				});
+
+				it('should remove last tag when backspace is typed', function() {
+					input.val('tag1, tag-to-remove');
+					var tagged = tag.tagify('#tags');
+					var tagsBefore = tagged.tags();
+					assert.lengthEquals(tagsBefore, 2);
+					type(input.first(), BACKSPACE);
+					var tagsAfter = tagged.tags();
+					assert.include(tagsAfter, 'tag1');
+					assert.lengthEquals(tagsAfter, 1);
+				});
+
+				it('should do nothing when backspace is typed and there are no tags', function() {
+					input.val('');
+					var tagged = tag.tagify('#tags');
+					var tagsBefore = tagged.tags();
+					assert.lengthEquals(tagsBefore, 0);
+					type(input.first(), BACKSPACE);
+					var tagsAfter = tagged.tags();
+					assert.lengthEquals(tagsAfter, 0);
 				});
 			});
 		});

@@ -2,7 +2,8 @@ define('tag', ['doc'], function($) {
 	'use strict';
 
 	var COMMA = 188,
-		ENTER = 13;
+		ENTER = 13,
+		BACKSPACE = 8;
 
 	var Tag = function($element) {
 		var tags = [];
@@ -12,6 +13,9 @@ define('tag', ['doc'], function($) {
 				e.which === ENTER || e.keyCode === ENTER) {
 				e.preventDefault();
 				addTags();
+			} else if (e.which === BACKSPACE || e.keyCode === BACKSPACE) {
+				e.preventDefault();
+				removeLastTag();
 			}
 		});
 
@@ -20,6 +24,10 @@ define('tag', ['doc'], function($) {
 				return tag.length > 0;
 			});
 			tags = tags.concat(tagsToAdd);
+		};
+
+		var removeLastTag = function() {
+			tags.pop();
 		};
 
 		addTags();

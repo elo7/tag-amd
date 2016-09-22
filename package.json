@@ -25,6 +25,7 @@
   "devDependencies": {
     "bower": "1.7.9",
     "codeceptjs": "0.4.5",
+    "express": "4.14.0",
     "phantomjs-prebuilt": "2.1.12"
   }
 }

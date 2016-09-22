@@ -1,13 +1,13 @@
 #!/bin/bash
 
-function killPhantom {
-	kill $PHANTOM_PID
+function killServer {
+	kill $NODE_PID
 }
 
-trap killPhantom EXIT
+trap killServer EXIT
 
-NODE_BIN=./node_modules/.bin
+node test/acceptance/test_server.js &
+NODE_PID=$!
+sleep 3
 
-$NODE_BIN/phantomjs --webdriver=4444 > /dev/null &
-PHANTOM_PID=$!
-cd test/acceptance/ && ../../$NODE_BIN/codeceptjs run --steps
+./node_modules/mocha-phantomjs/bin/mocha-phantomjs -R spec "http://localhost:3000/index.html";

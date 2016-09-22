@@ -1,3 +1,18 @@
 define('tag', ['doc'], function($) {
-	console.log($('h1').text());
-})
+	'use strict';
+
+	var Tag = function(element) {
+		this.tags = function() {
+			return [element.val()];
+		};
+	};
+
+	var tagify = function(selector) {
+		var element = $(selector);
+		return new Tag(element)
+	};
+
+	return {
+		tagify: tagify
+	};
+});

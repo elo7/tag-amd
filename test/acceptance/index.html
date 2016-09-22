@@ -5,13 +5,33 @@
 	<title>Test</title>
 </head>
 <body>
-	<h1>It Works!</h1>
+	<div id="mocha"></div>
+
+	<input id="tags">
 	<script src="mocha/mocha.js"></script>
 	<script src="proclaim/lib/proclaim.js"></script>
 	<script src="async-define/async-define.js"></script>
 	<script src="events-amd/events-amd.js"></script>
 	<script src="doc-amd/doc.js"></script>
 	<script src="tag.js"></script>
+
+	<script>
+		const assert = proclaim;
+		mocha.ui('bdd');
+
+		define(['doc', 'tag'], function($, tag) {
+			describe('Tagify method', function() {
+				it('should create a single tag from a filled input', function() {
+					$('#tags').val('tag1');
+					const tagged = tag.tagify('#tags');
+					const tags = tagged.tags();
+					assert.lengthEquals(tags, 1);
+					assert.include(tags, 'tag1');
+				});
+			})
+		});
+	</script>
+
 	<script>
 		if (window.mochaPhantomJS) {
 			mochaPhantomJS.run();

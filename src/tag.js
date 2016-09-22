@@ -3,6 +3,7 @@ define('tag', ['doc'], function($) {
 
 	var COMMA = 188,
 		ENTER = 13,
+		TAB = 9,
 		BACKSPACE = 8;
 
 	var Tag = function($element) {
@@ -10,7 +11,8 @@ define('tag', ['doc'], function($) {
 
 		$element.on('keydown', function(e) {
 			if (e.which === COMMA || e.keyCode === COMMA ||
-				e.which === ENTER || e.keyCode === ENTER) {
+				e.which === ENTER || e.keyCode === ENTER ||
+				e.which === TAB || e.keyCode === TAB) {
 				e.preventDefault();
 				addTags();
 			} else if (e.which === BACKSPACE || e.keyCode === BACKSPACE) {

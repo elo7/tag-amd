@@ -19,6 +19,7 @@
 	<script>
 		var COMMA = 188,
 			ENTER = 13,
+			TAB = 9,
 			BACKSPACE = 8;
 		var type = function(element, keyCode) {
 			var evt;
@@ -105,6 +106,18 @@
 					var tagsBefore = tagged.tags();
 					assert.lengthEquals(tagsBefore, 0);
 					type(input.first(), ENTER);
+					var tagsAfter = tagged.tags();
+					assert.include(tagsAfter, 'tag1');
+					assert.lengthEquals(tagsAfter, 1);
+				});
+
+				it('should create a new tag when tab is typed', function() {
+					input.val('');
+					var tagged = tag.tagify('#tags');
+					input.val('tag1');
+					var tagsBefore = tagged.tags();
+					assert.lengthEquals(tagsBefore, 0);
+					type(input.first(), TAB);
 					var tagsAfter = tagged.tags();
 					assert.include(tagsAfter, 'tag1');
 					assert.lengthEquals(tagsAfter, 1);

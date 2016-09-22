@@ -4,7 +4,8 @@
   "description": "Transform an input into a tag field",
   "main": "index.js",
   "scripts": {
-    "test": "bash test.sh"
+    "test": "bash test.sh",
+    "test:server": "node test/acceptance/test_server.js"
   },
   "repository": {
     "type": "git",

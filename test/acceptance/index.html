@@ -3,6 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Test</title>
+	<link href="mocha.css" rel="stylesheet">
 </head>
 <body>
 	<div id="mocha"></div>
@@ -16,53 +17,85 @@
 	<script src="tag.js"></script>
 
 	<script>
-		const assert = proclaim;
+		var COMMA = 188;
+		var type = function(element, keyCode) {
+			var evt;
+			try {
+				evt = new Event('keydown');
+			} catch (e) {
+				evt = document.createEvent('Event');
+				evt.initEvent('keydown', true, false);
+			}
+			evt.which = keyCode;
+			evt.keyCode = keyCode;
+
+			element.dispatchEvent(evt);
+		};
+	</script>
+
+	<script>
+		var assert = proclaim;
 		mocha.ui('bdd');
 
 		define(['doc', 'tag'], function($, tag) {
+			var input = $('#tags');
 			describe('Tagify method', function() {
 				it('should create a single tag from a filled input', function() {
-					$('#tags').val('tag1');
-					const tagged = tag.tagify('#tags');
-					const tags = tagged.tags();
+					input.val('tag1');
+					var tagged = tag.tagify('#tags');
+					var tags = tagged.tags();
 					assert.include(tags, 'tag1');
 					assert.lengthEquals(tags, 1);
 				});
 				it('should create two tags from a filled input, splitted with comma', function() {
-					$('#tags').val('tag1,another-tag');
-					const tagged = tag.tagify('#tags');
-					const tags = tagged.tags();
+					input.val('tag1,another-tag');
+					var tagged = tag.tagify('#tags');
+					var tags = tagged.tags();
 					assert.include(tags, 'tag1');
 					assert.include(tags, 'another-tag');
 					assert.lengthEquals(tags, 2);
 				});
 				it('should create two tags from a filled input, splitted with a spaced comma', function() {
-					$('#tags').val('tag1, another-tag');
-					const tagged = tag.tagify('#tags');
-					const tags = tagged.tags();
+					input.val('tag1, another-tag');
+					var tagged = tag.tagify('#tags');
+					var tags = tagged.tags();
 					assert.include(tags, 'tag1');
 					assert.include(tags, 'another-tag');
 					assert.lengthEquals(tags, 2);
 				});
 				it('should create two tags from a filled input, one of them with spaces, splitted with a spaced comma', function() {
-					$('#tags').val('tag1, another tag');
-					const tagged = tag.tagify('#tags');
-					const tags = tagged.tags();
+					input.val('tag1, another tag');
+					var tagged = tag.tagify('#tags');
+					var tags = tagged.tags();
 					assert.include(tags, 'tag1');
 					assert.include(tags, 'another tag');
 					assert.lengthEquals(tags, 2);
 				});
 				it('should create some tags from a filled input, removing empty tags', function() {
-					$('#tags').val('tag1, another tag, tag2,, another another , ,');
-					const tagged = tag.tagify('#tags');
-					const tags = tagged.tags();
+					input.val('tag1, another tag, tag2,, another another , ,');
+					var tagged = tag.tagify('#tags');
+					var tags = tagged.tags();
 					assert.include(tags, 'tag1');
 					assert.include(tags, 'another tag');
 					assert.include(tags, 'tag2');
 					assert.include(tags, 'another another');
 					assert.lengthEquals(tags, 4);
 				});
-			})
+			});
+
+			describe('Interaction with a tagified input', function() {
+				it('should create a new tag when a comma is typed', function() {
+					input.val('');
+					var tagged = tag.tagify('#tags');
+					input.val('tag1');
+					var tagsBefore = tagged.tags();
+					assert.lengthEquals(tagsBefore, 0);
+					type(input.first(), COMMA);
+					var tagsAfter = tagged.tags();
+					assert.include(tagsAfter, 'tag1');
+					assert.lengthEquals(tagsAfter, 1);
+				});
+			});
 		});
 	</script>
 

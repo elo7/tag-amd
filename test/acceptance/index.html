@@ -46,43 +46,27 @@
 				it('should create a single tag from a filled input', function() {
 					input.val('tag1');
 					var tagged = tag.tagify('#tags');
-					var tags = tagged.tags();
-					assert.include(tags, 'tag1');
-					assert.lengthEquals(tags, 1);
+					assert.deepEqual(tagged.tags(), ['tag1']);
 				});
 				it('should create two tags from a filled input, splitted with comma', function() {
 					input.val('tag1,another-tag');
 					var tagged = tag.tagify('#tags');
-					var tags = tagged.tags();
-					assert.include(tags, 'tag1');
-					assert.include(tags, 'another-tag');
-					assert.lengthEquals(tags, 2);
+					assert.deepEqual(tagged.tags(), ['tag1', 'another-tag']);
 				});
 				it('should create two tags from a filled input, splitted with a spaced comma', function() {
 					input.val('tag1, another-tag');
 					var tagged = tag.tagify('#tags');
-					var tags = tagged.tags();
-					assert.include(tags, 'tag1');
-					assert.include(tags, 'another-tag');
-					assert.lengthEquals(tags, 2);
+					assert.deepEqual(tagged.tags(), ['tag1', 'another-tag']);
 				});
 				it('should create two tags from a filled input, one of them with spaces, splitted with a spaced comma', function() {
 					input.val('tag1, another tag');
 					var tagged = tag.tagify('#tags');
-					var tags = tagged.tags();
-					assert.include(tags, 'tag1');
-					assert.include(tags, 'another tag');
-					assert.lengthEquals(tags, 2);
+					assert.deepEqual(tagged.tags(), ['tag1', 'another tag']);
 				});
 				it('should create some tags from a filled input, removing empty tags', function() {
 					input.val('tag1, another tag, tag2,, another another , ,');
 					var tagged = tag.tagify('#tags');
-					var tags = tagged.tags();
-					assert.include(tags, 'tag1');
-					assert.include(tags, 'another tag');
-					assert.include(tags, 'tag2');
-					assert.include(tags, 'another another');
-					assert.lengthEquals(tags, 4);
+					assert.deepEqual(tagged.tags(), ['tag1', 'another tag', 'tag2', 'another another']);
 				});
 			});
 
@@ -91,57 +75,43 @@
 					input.val('');
 					var tagged = tag.tagify('#tags');
 					input.val('tag1');
-					var tagsBefore = tagged.tags();
-					assert.lengthEquals(tagsBefore, 0);
+					assert.lengthEquals(tagged.tags(), 0);
 					type(input.first(), COMMA);
-					var tagsAfter = tagged.tags();
-					assert.include(tagsAfter, 'tag1');
-					assert.lengthEquals(tagsAfter, 1);
+					assert.deepEqual(tagged.tags(), ['tag1']);
 				});
 
 				it('should create a new tag when enter is typed', function() {
 					input.val('');
 					var tagged = tag.tagify('#tags');
 					input.val('tag1');
-					var tagsBefore = tagged.tags();
-					assert.lengthEquals(tagsBefore, 0);
+					assert.lengthEquals(tagged.tags(), 0);
 					type(input.first(), ENTER);
-					var tagsAfter = tagged.tags();
-					assert.include(tagsAfter, 'tag1');
-					assert.lengthEquals(tagsAfter, 1);
+					assert.deepEqual(tagged.tags(), ['tag1']);
 				});
 
 				it('should create a new tag when tab is typed', function() {
 					input.val('');
 					var tagged = tag.tagify('#tags');
 					input.val('tag1');
-					var tagsBefore = tagged.tags();
-					assert.lengthEquals(tagsBefore, 0);
+					assert.lengthEquals(tagged.tags(), 0);
 					type(input.first(), TAB);
-					var tagsAfter = tagged.tags();
-					assert.include(tagsAfter, 'tag1');
-					assert.lengthEquals(tagsAfter, 1);
+					assert.deepEqual(tagged.tags(), ['tag1']);
 				});
 
 				it('should remove last tag when backspace is typed', function() {
 					input.val('tag1, tag-to-remove');
 					var tagged = tag.tagify('#tags');
-					var tagsBefore = tagged.tags();
-					assert.lengthEquals(tagsBefore, 2);
+					assert.lengthEquals(tagged.tags(), 2);
 					type(input.first(), BACKSPACE);
-					var tagsAfter = tagged.tags();
-					assert.include(tagsAfter, 'tag1');
-					assert.lengthEquals(tagsAfter, 1);
+					assert.deepEqual(tagged.tags(), ['tag1']);
 				});
 
 				it('should do nothing when backspace is typed and there are no tags', function() {
 					input.val('');
 					var tagged = tag.tagify('#tags');
-					var tagsBefore = tagged.tags();
-					assert.lengthEquals(tagsBefore, 0);
+					assert.lengthEquals(tagged.tags(), 0);
 					type(input.first(), BACKSPACE);
-					var tagsAfter = tagged.tags();
-					assert.lengthEquals(tagsAfter, 0);
+					assert.lengthEquals(tagged.tags(), 0);
 				});
 			});
 		});

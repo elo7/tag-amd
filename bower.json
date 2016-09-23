@@ -21,9 +21,9 @@
     "tests"
   ],
   "dependencies": {
-    "doc-amd": "^1.0.10"
+    "doc-amd": "1.0.10"
   },
   "devDependencies": {
-    "async-define": "elo7/async-define#^1.0.5"
+    "async-define": "elo7/async-define#1.0.5"
   }
 }

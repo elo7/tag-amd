@@ -16,16 +16,20 @@ define('tag', ['doc'], function($) {
 				e.preventDefault();
 				addTags();
 			} else if (e.which === BACKSPACE || e.keyCode === BACKSPACE) {
-				e.preventDefault();
-				removeLastTag();
+				var currentTag = $element.val().replace(/(.*),\s/, '');
+				if(currentTag === '' || tags.indexOf(currentTag) > 0) {
+					e.preventDefault();
+					removeLastTag();
+				}
 			}
 		});
 
 		var addTags = function() {
 			var tagsToAdd = $element.val().split(/\s*,\s*/).filter(function(tag) {
-				return tag.length > 0;
+				return tag.length > 0 && tags.indexOf(tag) < 0;
 			});
 			tags = tags.concat(tagsToAdd);
+			$element.val('');
 		};
 
 		var removeLastTag = function() {

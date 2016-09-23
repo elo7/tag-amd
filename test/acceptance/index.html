@@ -20,7 +20,8 @@
 		var COMMA = 188,
 			ENTER = 13,
 			TAB = 9,
-			BACKSPACE = 8;
+			BACKSPACE = 8,
+			CHAR_A = 65;
 		var type = function(element, keyCode) {
 			var evt;
 			try {
@@ -42,7 +43,16 @@
 
 		define(['doc', 'tag'], function($, tag) {
 			var input = $('#tags');
+
 			describe('Tagify method', function() {
+				beforeEach(function() {
+					input.val('');
+				});
+
+				afterEach(function() {
+					input.off('keydown');
+				});
+
 				it('should create a single tag from a filled input', function() {
 					input.val('tag1');
 					var tagged = tag.tagify('#tags');
@@ -71,8 +81,15 @@
 			});
 
 			describe('Interaction with a tagified input', function() {
-				it('should create a new tag when a comma is typed', function() {
+				beforeEach(function() {
 					input.val('');
+				});
+
+				afterEach(function() {
+					input.off('keydown');
+				});
+
+				it('should create a new tag when a comma is typed', function() {
 					var tagged = tag.tagify('#tags');
 					input.val('tag1');
 					assert.lengthEquals(tagged.tags(), 0);
@@ -80,8 +97,14 @@
 					assert.deepEqual(tagged.tags(), ['tag1']);
 				});
 
+				it('should not duplicate tag', function() {
+					input.val('tag1');
+					var tagged = tag.tagify('#tags');
+					type(input.first(), COMMA);
+					assert.deepEqual(tagged.tags(), ['tag1']);
+				});
+
 				it('should create a new tag when enter is typed', function() {
-					input.val('');
 					var tagged = tag.tagify('#tags');
 					input.val('tag1');
 					assert.lengthEquals(tagged.tags(), 0);
@@ -90,7 +113,6 @@
 				});
 
 				it('should create a new tag when tab is typed', function() {
-					input.val('');
 					var tagged = tag.tagify('#tags');
 					input.val('tag1');
 					assert.lengthEquals(tagged.tags(), 0);
@@ -107,7 +129,6 @@
 				});
 
 				it('should do nothing when backspace is typed and there are no tags', function() {
-					input.val('');
 					var tagged = tag.tagify('#tags');
 					assert.lengthEquals(tagged.tags(), 0);
 					type(input.first(), BACKSPACE);

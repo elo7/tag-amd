@@ -134,6 +134,22 @@
 					type(input.first(), BACKSPACE);
 					assert.lengthEquals(tagged.tags(), 0);
 				});
+
+				it('should add all tags in the input when comma is typed', function() {
+					var tagged = tag.tagify('#tags');
+					assert.lengthEquals(tagged.tags(), 0);
+					input.val('tag1, another tag');
+					type(input.first(), COMMA);
+					assert.deepEqual(tagged.tags(), ['tag1', 'another tag']);
+				});
+
+				it('should add all unique tags in the input when comma is typed and there are repeated tags', function() {
+					var tagged = tag.tagify('#tags');
+					assert.lengthEquals(tagged.tags(), 0);
+					input.val('tag1, another tag, tag1, yet another');
+					type(input.first(), COMMA);
+					assert.deepEqual(tagged.tags(), ['tag1', 'another tag', 'yet another']);
+				});
 			});
 		});
 	</script>

@@ -24,10 +24,17 @@ define('tag', ['doc'], function($) {
 			}
 		});
 
+		var filterUniques = function(previousArray, currentElement) {
+			if (previousArray.indexOf(currentElement) < 0) {
+				previousArray.push(currentElement);
+			}
+			return previousArray;
+		};
+
 		var addTags = function() {
 			var tagsToAdd = $element.val().split(/\s*,\s*/).filter(function(tag) {
 				return tag.length > 0 && tags.indexOf(tag) < 0;
-			});
+			}).reduce(filterUniques, []);
 			tags = tags.concat(tagsToAdd);
 			$element.val('');
 		};

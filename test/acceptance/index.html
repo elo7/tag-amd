@@ -21,6 +21,8 @@
 			ENTER = 13,
 			TAB = 9,
 			BACKSPACE = 8,
+			LEFT_KEY = 37,
+			RIGHT_KEY = 39,
 			CHAR_A = 65;
 		var type = function(element, keyCode) {
 			var evt;
@@ -80,7 +82,7 @@
 				});
 			});
 
-			describe('Interaction with a tagified input', function() {
+			describe('Typing in a tagified input', function() {
 				beforeEach(function() {
 					input.val('');
 				});
@@ -149,6 +151,84 @@
 					input.val('tag1, another tag, tag1, yet another');
 					type(input.first(), COMMA);
 					assert.deepEqual(tagged.tags(), ['tag1', 'another tag', 'yet another']);
+				});
+			});
+
+			describe('Selecting tags of a tagified input', function() {
+				it('should have no selected tags after activated', function() {
+					input.val('tag1, tag-to-remove');
+					var tagged = tag.tagify('#tags');
+					assert.isNull(tagged.selected());
+				});
+
+				it('should not select tags when pressing left key if input is filled', function() {
+					input.val('tag1, another');
+					var tagged = tag.tagify('#tags');
+					input.val('tag2')
+					type(input.first(), LEFT_KEY);
+					assert.isNull(tagged.selected());
+				});
+
+				it('should not select tags if none is selected and right key is pressed', function() {
+					input.val('tag1, tag-to-remove');
+					var tagged = tag.tagify('#tags');
+					assert.isNull(tagged.selected());
+					type(input.first(), RIGHT_KEY);
+					assert.isNull(tagged.selected());
+				});
+
+				it('should not select tags when pressing right key if input is filled', function() {
+					input.val('tag1, another');
+					var tagged = tag.tagify('#tags');
+					input.val('tag2')
+					type(input.first(), RIGHT_KEY);
+					assert.isNull(tagged.selected());
+				});
+
+				it('should select the last tag when pressing left key if input is empty', function() {
+					input.val('tag1, another');
+					var tagged = tag.tagify('#tags');
+					input.val('')
+					type(input.first(), LEFT_KEY);
+					assert.equal(tagged.selected(), 'another');
+				});
+
+				it('should select the tag before when pressing left key with a tag selected', function() {
+					input.val('tag1, another');
+					var tagged = tag.tagify('#tags');
+					input.val('')
+					type(input.first(), LEFT_KEY);
+					type(input.first(), LEFT_KEY);
+					assert.equal(tagged.selected(), 'tag1');
+				});
+
+				it('should keep the first tag selected when pressing left key with the first tag selected', function() {
+					input.val('tag1, another');
+					var tagged = tag.tagify('#tags');
+					input.val('')
+					type(input.first(), LEFT_KEY);
+					type(input.first(), LEFT_KEY);
+					type(input.first(), LEFT_KEY);
+					assert.equal(tagged.selected(), 'tag1');
+				});
+
+				it('should deselect the last tag if it was previously selected when the right key is pressed', function() {
+					input.val('tag1, another');
+					var tagged = tag.tagify('#tags');
+					input.val('')
+					type(input.first(), LEFT_KEY);
+					type(input.first(), RIGHT_KEY);
+					assert.isNull(tagged.selected());
+				});
+
+				it('should select the next tag when the right key is pressed and there is next tag', function() {
+					input.val('tag1, another');
+					var tagged = tag.tagify('#tags');
+					input.val('')
+					type(input.first(), LEFT_KEY);
+					type(input.first(), LEFT_KEY);
+					type(input.first(), RIGHT_KEY);
+					assert.equal(tagged.selected(), 'another');
 				});
 			});
 		});

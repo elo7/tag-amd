@@ -4,22 +4,47 @@ define('tag', ['doc'], function($) {
 	var COMMA = 188,
 		ENTER = 13,
 		TAB = 9,
-		BACKSPACE = 8;
+		BACKSPACE = 8,
+		LEFT_KEY = 37,
+		RIGHT_KEY = 39;
+
+	var isKeyPressed = function(event, key) {
+		return event.which === key || event.keyCode === key;
+	};
+
+	var isAnyOfTheseKeysPressed = function(event, keys) {
+		return keys.some(function(key) {
+			return isKeyPressed(event, key);
+		});
+	};
 
 	var Tag = function($element) {
-		var tags = [];
+		var tags = [],
+			selectedTag = null;
 
 		$element.on('keydown', function(e) {
-			if (e.which === COMMA || e.keyCode === COMMA ||
-				e.which === ENTER || e.keyCode === ENTER ||
-				e.which === TAB || e.keyCode === TAB) {
+			if (isAnyOfTheseKeysPressed(e, [ENTER, COMMA, TAB])) {
 				e.preventDefault();
 				addTags();
-			} else if (e.which === BACKSPACE || e.keyCode === BACKSPACE) {
+			} else if (isKeyPressed(e, BACKSPACE)) {
 				var currentTag = $element.val().replace(/(.*),\s/, '');
 				if(currentTag === '' || tags.indexOf(currentTag) > 0) {
 					e.preventDefault();
 					removeLastTag();
+				}
+			} else if (isKeyPressed(e, LEFT_KEY)) {
+				if ($element.val() === '') {
+					if (selectedTag === null) {
+						selectedTag = tags.length - 1;
+					} else if (selectedTag > 0) {
+						selectedTag--;
+					}
+				}
+			} else if (isKeyPressed(e, RIGHT_KEY)) {
+				if (selectedTag === tags.length - 1) {
+					selectedTag = null;
+				} else if (selectedTag !== null) {
+					selectedTag++;
 				}
 			}
 		});
@@ -46,6 +71,13 @@ define('tag', ['doc'], function($) {
 		addTags();
 		this.tags = function() {
 			return tags;
+		};
+
+		this.selected = function() {
+			if (selectedTag !== null) {
+				return tags[selectedTag];
+			}
+			return null;
 		};
 	};
 

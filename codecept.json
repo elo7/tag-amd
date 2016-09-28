@@ -1,15 +1,12 @@
 {
-  "tests": "tests/*_test.js",
+  "tests": "tests/*.js",
   "timeout": 10000,
   "output": "./output",
   "helpers": {
     "WebDriverIO": {
       "url": "http://localhost:3000",
-      "browser": "firefox"
+      "browser": "chrome"
     }
-  },
-  "include": {
-    "I": "tests/custom_steps.js"
   },
   "bootstrap": false,
   "mocha": {},

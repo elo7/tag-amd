@@ -1,0 +1,17 @@
+{
+  "tests": "tests/*_test.js",
+  "timeout": 10000,
+  "output": "./output",
+  "helpers": {
+    "WebDriverIO": {
+      "url": "http://localhost:3000",
+      "browser": "firefox"
+    }
+  },
+  "include": {
+    "I": "tests/custom_steps.js"
+  },
+  "bootstrap": false,
+  "mocha": {},
+  "name": "tag-amd"
+}

@@ -4,8 +4,7 @@
   "description": "Transform an input into a tag field",
   "main": "index.js",
   "scripts": {
-    "test": "bash test.sh",
-    "test:server": "node test/acceptance/test_server.js"
+    "test": ""
   },
   "repository": {
     "type": "git",
@@ -25,10 +24,7 @@
   "homepage": "https://github.com/elo7/tag-amd#readme",
   "devDependencies": {
     "bower": "1.7.9",
-    "express": "4.14.0",
-    "mocha": "3.0.2",
-    "mocha-phantomjs": "4.1.0",
-    "phantomjs-prebuilt": "2.1.12",
-    "proclaim": "3.4.3"
+    "codeceptjs": "0.4.5",
+    "webdriverio": "4.2.16"
   }
 }

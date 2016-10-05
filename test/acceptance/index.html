@@ -122,12 +122,13 @@
 					assert.deepEqual(tagged.tags(), ['tag1']);
 				});
 
-				it('should remove last tag when backspace is typed', function() {
-					input.val('tag1, tag-to-remove');
+				it('should not remove last tag when has text and backspace is typed', function() {
+					input.val('tag1, tag2');
 					var tagged = tag.tagify('#tags');
+					input.val(input.val() + 'another-tag');
 					assert.lengthEquals(tagged.tags(), 2);
 					type(input.first(), BACKSPACE);
-					assert.deepEqual(tagged.tags(), ['tag1']);
+					assert.deepEqual(tagged.tags(), ['tag1', 'tag2']);
 				});
 
 				it('should do nothing when backspace is typed and there are no tags', function() {
@@ -151,6 +152,16 @@
 					input.val('tag1, another tag, tag1, yet another');
 					type(input.first(), COMMA);
 					assert.deepEqual(tagged.tags(), ['tag1', 'another tag', 'yet another']);
+				});
+
+				it('should add tag when key and comma is typed', function() {
+					var tagged = tag.tagify('#tags');
+					input.val('tag1');
+					type(input.first(), COMMA);
+					type(input.first(), CHAR_A);
+					input.val(input.val() + 'a'); // Simulate typing
+					type(input.first(), COMMA);
+					assert.deepEqual(tagged.tags(), ['tag1', 'a']);
 				});
 			});
 

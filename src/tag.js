@@ -100,11 +100,27 @@ define('tag', ['doc'], function($) {
 
 		var addTag = function(tag) {
 			var $li = $(document.createElement('li')),
-				$input = $(document.createElement('input'));
+				$input = $(document.createElement('input')),
+				$closeButton = $(document.createElement('button'));
+			$closeButton.addClass('close').html('&times;');
 			$input.attr('type', 'hidden').attr('name', $element.attr('name')).val(tag);
 			$li.text(tag);
 			$li.addClass('tag').append($input.first());
+			$li.append($closeButton.first());
 			$tagList.first().insertBefore($li.first(), $inputContainer.first());
+
+			$closeButton.on('click', function() {
+				var index = tags.indexOf($(this).parent().find('input').val());
+				removeTag(index);
+			});
+
+			$li.on('click', function() {
+				$tagList.find('.selected').removeClass('selected');
+				$(this).addClass('selected');
+
+				var index = tags.indexOf($(this).find('input').val());
+				selectedTag = index;
+			});
 
 			tags.push(tag);
 		};

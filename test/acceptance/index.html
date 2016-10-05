@@ -4,9 +4,10 @@
 	<meta charset="UTF-8">
 	<title>Test</title>
 	<link href="mocha.css" rel="stylesheet">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
-	<div id="mocha"></div>
+	<div id="mocha" style='display: none'></div>
 
 	<section id='test'></section>
 	<script src="mocha/mocha.js"></script>
@@ -68,6 +69,8 @@
 			padding: 0.2em 0.5em;
 			margin-right: 0.5em;
 			border-radius: 3px;
+			position: relative;
+			padding-right: 1.5em;
 		}
 
 		.tags .tag.selected {
@@ -78,6 +81,20 @@
 			outline: 0;
 			border: 0;
 			font-size: inherit;
+		}
+
+		.tags .close {
+			background: none;
+			border: none;
+			font-size: inherit;
+			margin: 0 0 0 0.3em;
+			padding: 0;
+			color: inherit;
+			cursor: pointer;
+			position: absolute;
+			right: 0.5em;
+			top: 50%;
+			transform: translateY(-50%);
 		}
 
 		.error {

@@ -8,7 +8,7 @@
 <body>
 	<div id="mocha"></div>
 
-	<input id="tags">
+	<section id='test'></section>
 	<script src="mocha/mocha.js"></script>
 	<script src="proclaim/lib/proclaim.js"></script>
 	<script src="async-define/async-define.js"></script>
@@ -39,20 +39,54 @@
 		};
 	</script>
 
+	<style>
+		body {
+			font-family: sans-serif;
+		}
+
+		.tags-container {
+			margin: 0;
+			padding: 0;
+			border: 1px solid #dedede;
+			border-radius: 3px;
+		}
+
+		.tags {
+			list-style: none;
+			margin: 0.5em 0.5em 0;
+			padding-left: 0;
+		}
+
+		.tags li {
+			display: inline-block;
+			margin-bottom: 0.5em;
+		}
+
+		.tags .tag {
+			background-color: lightgray;
+			padding: 0.2em 0.5em;
+			margin-right: 0.5em;
+			border-radius: 3px;
+		}
+
+		.tags .input-tag input {
+			outline: 0;
+			border: 0;
+			font-size: inherit;
+		}
+	</style>
+
 	<script>
 		var assert = proclaim;
 		mocha.ui('bdd');
 
 		define(['doc', 'tag'], function($, tag) {
-			var input = $('#tags');
+			var input;
 
 			describe('Tagify method', function() {
 				beforeEach(function() {
-					input.val('');
-				});
-
-				afterEach(function() {
-					input.off('keydown');
+					$('#test').html('<input id="tags" name="tags-name">')
+					input = $('#test').find('#tags');
 				});
 
 				it('should create a single tag from a filled input', function() {
@@ -84,11 +118,8 @@
 
 			describe('Typing in a tagified input', function() {
 				beforeEach(function() {
-					input.val('');
-				});
-
-				afterEach(function() {
-					input.off('keydown');
+					$('#test').html('<input id="tags" name="tags-name">')
+					input = $('#test').find('#tags');
 				});
 
 				it('should create a new tag when a comma is typed', function() {
@@ -166,6 +197,11 @@
 			});
 
 			describe('Selecting tags of a tagified input', function() {
+				beforeEach(function() {
+					$('#test').html('<input id="tags" name="tags-name">')
+					input = $('#test').find('#tags');
+				});
+
 				it('should have no selected tags after activated', function() {
 					input.val('tag1, tag-to-remove');
 					var tagged = tag.tagify('#tags');
@@ -240,6 +276,33 @@
 					type(input.first(), LEFT_KEY);
 					type(input.first(), RIGHT_KEY);
 					assert.equal(tagged.selected(), 'another');
+				});
+			});
+
+			describe('when tagging', function() {
+				beforeEach(function() {
+					$('#test').html('<input id="tags" name="tags-name">')
+					input = $('#test').find('#tags');
+				});
+
+				it('should add a new li with tag as value', function() {
+					input.val('tag');
+					tag.tagify('#tags');
+					assert.notOk($('input[value="tag"]').isEmpty());
+				});
+
+				it('should add a another li with another tag as value', function() {
+					input.val('tag, another-tag');
+					tag.tagify('#tags');
+					assert.notOk($('input[value="tag"]').isEmpty());
+					assert.notOk($('input[value="another-tag"]').isEmpty());
+				});
+
+				it('should remove tag on backspace', function() {
+					input.val('tag');
+					tag.tagify('#tags');
+					type(input.first(), BACKSPACE);
+					assert.ok($('input[value="tag"]').isEmpty());
 				});
 			});
 		});

@@ -20,7 +20,19 @@ define('tag', ['doc'], function($) {
 
 	var Tag = function($element) {
 		var tags = [],
-			selectedTag = null;
+			selectedTag = null,
+			$container = $(document.createElement('fieldset')),
+			$tagList = $(document.createElement('ul')),
+			$inputContainer = $(document.createElement('li'));
+			$tagList.addClass('tags');
+
+		$container.addClass('tags-container').append($tagList.first());
+		$element.parent().first().insertBefore($container.first(), $element.first());
+		$tagList.append($inputContainer.first());
+		$inputContainer.addClass('input-tag').append($element.first());
+		$container.on('click', function() {
+			$element.focus();
+		});
 
 		$element.on('keydown', function(e) {
 			if (isAnyOfTheseKeysPressed(e, [ENTER, COMMA, TAB])) {
@@ -60,12 +72,27 @@ define('tag', ['doc'], function($) {
 			var tagsToAdd = $element.val().split(/\s*,\s*/).filter(function(tag) {
 				return tag.length > 0 && tags.indexOf(tag) < 0;
 			}).reduce(filterUniques, []);
-			tags = tags.concat(tagsToAdd);
+			for(var i = 0; i < tagsToAdd.length; i++) {
+				addTag(tagsToAdd[i]);
+			}
 			$element.val('');
 		};
 
+		var addTag = function(tag) {
+			var $li = $(document.createElement('li')),
+				$input = $(document.createElement('input'));
+			$input.attr('type', 'hidden').attr('name', $element.attr('name')).val(tag);
+			$li.text(tag);
+			$li.addClass('tag').append($input.first());
+			$tagList.first().insertBefore($li.first(), $inputContainer.first());
+
+			tags.push(tag);
+		};
+
 		var removeLastTag = function() {
-			tags.pop();
+			if(tags.pop()) {
+				$tagList.find('.tag').last().remove();
+			}
 		};
 
 		addTags();

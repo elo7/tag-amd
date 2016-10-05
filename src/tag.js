@@ -5,6 +5,7 @@ define('tag', ['doc'], function($) {
 		ENTER = 13,
 		TAB = 9,
 		BACKSPACE = 8,
+		DELETE = 46,
 		LEFT_KEY = 37,
 		RIGHT_KEY = 39;
 
@@ -35,14 +36,18 @@ define('tag', ['doc'], function($) {
 		});
 
 		$element.on('keydown', function(e) {
+			$element.removeClass('error');
+			$container.find('.selected').removeClass('selected');
 			if (isAnyOfTheseKeysPressed(e, [ENTER, COMMA, TAB])) {
 				e.preventDefault();
 				addTags();
+			} else if (selectedTag !== null && isAnyOfTheseKeysPressed(e, [BACKSPACE, DELETE])) {
+				removeTag(selectedTag);
 			} else if (isKeyPressed(e, BACKSPACE)) {
-				var currentTag = $element.val().replace(/(.*),\s/, '');
-				if(currentTag === '' || tags.indexOf(currentTag) > 0) {
+				var currentTag = $element.val().replace(/\s/g, '');
+				if(currentTag === '') {
 					e.preventDefault();
-					removeLastTag();
+					removeTag(tags.length - 1);
 				}
 			} else if (isKeyPressed(e, LEFT_KEY)) {
 				if ($element.val() === '') {
@@ -58,24 +63,39 @@ define('tag', ['doc'], function($) {
 				} else if (selectedTag !== null) {
 					selectedTag++;
 				}
+			} else {
+				selectedTag = null;
+			}
+
+			if(selectedTag != null) {
+				focusTag(selectedTag);
 			}
 		});
 
+		var focusTag = function(selectedTag) {
+			var tagValue = tags[selectedTag];
+			$container.find('input[value="' + tagValue +'"]').parent().addClass('selected');
+		};
+
 		var filterUniques = function(previousArray, currentElement) {
 			if (previousArray.indexOf(currentElement) < 0) {
-				previousArray.push(currentElement);
+				previousArray.push(currentElement.trim());
 			}
 			return previousArray;
 		};
 
 		var addTags = function() {
 			var tagsToAdd = $element.val().split(/\s*,\s*/).filter(function(tag) {
-				return tag.length > 0 && tags.indexOf(tag) < 0;
+				return tag.length > 0 && tags.indexOf(tag.trim()) < 0;
 			}).reduce(filterUniques, []);
-			for(var i = 0; i < tagsToAdd.length; i++) {
-				addTag(tagsToAdd[i]);
+			if(tagsToAdd.length > 0) {
+				for(var i = 0; i < tagsToAdd.length; i++) {
+					addTag(tagsToAdd[i]);
+				}
+				$element.val('');
+			} else {
+				$element.addClass('error');
 			}
-			$element.val('');
 		};
 
 		var addTag = function(tag) {
@@ -89,9 +109,10 @@ define('tag', ['doc'], function($) {
 			tags.push(tag);
 		};
 
-		var removeLastTag = function() {
-			if(tags.pop()) {
-				$tagList.find('.tag').last().remove();
+		var removeTag = function(index) {
+			if(tags.splice(index, 1).length > 0) {
+				var tag = $tagList.find('.tag').els[index];
+				$(tag).removeItem();
 			}
 		};
 

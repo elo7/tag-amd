@@ -21,6 +21,7 @@
 			ENTER = 13,
 			TAB = 9,
 			BACKSPACE = 8,
+			DELETE = 46,
 			LEFT_KEY = 37,
 			RIGHT_KEY = 39,
 			CHAR_A = 65;
@@ -69,10 +70,18 @@
 			border-radius: 3px;
 		}
 
+		.tags .tag.selected {
+			background-color: gray;
+		}
+
 		.tags .input-tag input {
 			outline: 0;
 			border: 0;
 			font-size: inherit;
+		}
+
+		.error {
+			color: red;
 		}
 	</style>
 
@@ -279,7 +288,7 @@
 				});
 			});
 
-			describe('when tagging', function() {
+			describe('When tagging', function() {
 				beforeEach(function() {
 					$('#test').html('<input id="tags" name="tags-name">')
 					input = $('#test').find('#tags');
@@ -303,6 +312,60 @@
 					tag.tagify('#tags');
 					type(input.first(), BACKSPACE);
 					assert.ok($('input[value="tag"]').isEmpty());
+				});
+
+				it('should add an error class when trying to add repeated tag', function() {
+					input.val('tag');
+					tag.tagify('#tags');
+					input.val('tag');
+					type(input.first(), COMMA);
+					assert.equal($('.tags').find('.tag').size, 1);
+					assert.ok(input.hasClass('error'));
+				});
+
+				it('should remove error class when trying to add repeated tag and typing another letter', function() {
+					input.val('tag');
+					tag.tagify('#tags');
+					input.val('tag');
+					type(input.first(), COMMA);
+					type(input.first(), CHAR_A);
+					assert.equal($('.tags').find('.tag').size, 1);
+					assert.notOk(input.hasClass('error'));
+				});
+
+				it('should focus on second tag when typing left arrow key', function() {
+					input.val('tag, tag2');
+					tag.tagify('#tags');
+					type(input.first(), LEFT_KEY);
+					assert.equal($('.tag.selected').first(), $('input[value="tag2"]').parent().first());
+				});
+
+				it('should focus on first tag when typing left arrow key two times', function() {
+					input.val('tag, tag2');
+					tag.tagify('#tags');
+					type(input.first(), LEFT_KEY);
+					type(input.first(), LEFT_KEY);
+					assert.equal($('.tag.selected').first(), $('input[value="tag"]').parent().first());
+				});
+
+				it('should remove first tag when typing left arrow key two times and pressing backspace', function() {
+					input.val('tag, tag2');
+					tag.tagify('#tags');
+					type(input.first(), LEFT_KEY);
+					type(input.first(), LEFT_KEY);
+					type(input.first(), BACKSPACE);
+					assert.equal($('.tag').size, 1);
+					assert.notOk($('input[value="tag2"]').isEmpty());
+				});
+
+				it('should remove first tag when typing left arrow key two times and pressing delete', function() {
+					input.val('tag, tag2');
+					tag.tagify('#tags');
+					type(input.first(), LEFT_KEY);
+					type(input.first(), LEFT_KEY);
+					type(input.first(), DELETE);
+					assert.equal($('.tag').size, 1);
+					assert.notOk($('input[value="tag2"]').isEmpty());
 				});
 			});
 		});

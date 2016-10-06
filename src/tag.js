@@ -7,8 +7,7 @@ define('tag', ['doc'], function($) {
 		BACKSPACE = 8,
 		DELETE = 46,
 		LEFT_KEY = 37,
-		RIGHT_KEY = 39,
-		loadCSS = false;
+		RIGHT_KEY = 39;
 
 	var isKeyPressed = function(event, key) {
 		return event.which === key || event.keyCode === key;
@@ -146,20 +145,7 @@ define('tag', ['doc'], function($) {
 		};
 	};
 
-	var addCss = function() {
-		if(!loadCSS) {
-			var file = location.pathname.split( "/" ).pop();
-			var link = document.createElement( "link" );
-			link.href = "tag.css";
-			link.rel = "stylesheet";
-
-			document.getElementsByTagName("head")[0].appendChild(link);
-			loadCSS = true;
-		}
-	}
-
 	var tagify = function(selector) {
-		addCss();
 		var $element = $(selector);
 		return new Tag($element);
 	};

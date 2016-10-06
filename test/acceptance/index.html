@@ -42,67 +42,6 @@
 		};
 	</script>
 
-	<style>
-		body {
-			font-family: sans-serif;
-		}
-
-		.tags-container {
-			margin: 0;
-			padding: 0;
-			border: 1px solid #dedede;
-			border-radius: 3px;
-		}
-
-		.tags {
-			list-style: none;
-			margin: 0.5em 0.5em 0;
-			padding-left: 0;
-		}
-
-		.tags li {
-			display: inline-block;
-			margin-bottom: 0.5em;
-		}
-
-		.tags .tag {
-			background-color: lightgray;
-			padding: 0.2em 0.5em;
-			margin-right: 0.5em;
-			border-radius: 3px;
-			position: relative;
-			padding-right: 1.5em;
-		}
-
-		.tags .tag.selected {
-			background-color: gray;
-		}
-
-		.tags .input-tag input {
-			outline: 0;
-			border: 0;
-			font-size: inherit;
-		}
-
-		.tags .close {
-			background: none;
-			border: none;
-			font-size: inherit;
-			margin: 0 0 0 0.3em;
-			padding: 0;
-			color: inherit;
-			cursor: pointer;
-			position: absolute;
-			right: 0.5em;
-			top: 50%;
-			transform: translateY(-50%);
-		}
-
-		.error {
-			color: red;
-		}
-	</style>
-
 	<script>
 		var assert = proclaim;
 		mocha.ui('bdd');

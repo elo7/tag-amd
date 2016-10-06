@@ -85,7 +85,7 @@ define('tag', ['doc'], function($) {
 		};
 
 		var addTags = function() {
-			var tagsToAdd = $element.val().split(/\s*,\s*/).filter(function(tag) {
+			var tagsToAdd = $element.val().trim().split(/\s*,\s*/).filter(function(tag) {
 				return tag.length > 0 && tags.indexOf(tag.trim()) < 0;
 			}).reduce(filterUniques, []);
 			if(tagsToAdd.length > 0) {

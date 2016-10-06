@@ -7,7 +7,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
-	<div id="mocha" style='display: none'></div>
+	<div id="mocha"></div>
 
 	<section id='test'></section>
 	<script src="mocha/mocha.js"></script>
@@ -25,7 +25,8 @@
 			DELETE = 46,
 			LEFT_KEY = 37,
 			RIGHT_KEY = 39,
-			CHAR_A = 65;
+			CHAR_A = 65,
+			SPACEBAR = 32;
 		var type = function(element, keyCode) {
 			var evt;
 			try {
@@ -383,6 +384,13 @@
 					type(input.first(), DELETE);
 					assert.equal($('.tag').size, 1);
 					assert.notOk($('input[value="tag2"]').isEmpty());
+				});
+
+				it('should not add empty tag', function() {
+					input.val(' ');
+					tag.tagify('#tags');
+					type(input.first(), ENTER);
+					assert.equal($('.tag').size, 0);
 				});
 			});
 		});

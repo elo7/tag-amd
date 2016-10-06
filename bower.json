@@ -1,7 +1,7 @@
 {
   "name": "tag-amd",
   "description": "Transform an input into a tag field",
-  "main": "index.js",
+  "main": "tag.js",
   "authors": [
     "Elo7"
   ],

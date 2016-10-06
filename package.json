@@ -2,7 +2,7 @@
   "name": "tag-amd",
   "version": "1.0.0",
   "description": "Transform an input into a tag field",
-  "main": "index.js",
+  "main": "tag.js",
   "scripts": {
     "test": "bash test.sh",
     "test:server": "node test/acceptance/test_server.js"

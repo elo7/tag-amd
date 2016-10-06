@@ -25,8 +25,8 @@ define('tag', ['doc'], function($) {
 			$container = $(document.createElement('fieldset')),
 			$tagList = $(document.createElement('ul')),
 			$inputContainer = $(document.createElement('li'));
-			$tagList.addClass('tags');
 
+		$tagList.addClass('tags');
 		$container.addClass('tags-container').append($tagList.first());
 		$element.parent().first().insertBefore($container.first(), $element.first());
 		$tagList.append($inputContainer.first());

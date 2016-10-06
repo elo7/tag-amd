@@ -238,7 +238,7 @@
 				it('should not select tags when pressing left key if input is filled', function() {
 					input.val('tag1, another');
 					var tagged = tag.tagify('#tags');
-					input.val('tag2')
+					input.val('tag2');
 					type(input.first(), LEFT_KEY);
 					assert.isNull(tagged.selected());
 				});
@@ -254,7 +254,7 @@
 				it('should not select tags when pressing right key if input is filled', function() {
 					input.val('tag1, another');
 					var tagged = tag.tagify('#tags');
-					input.val('tag2')
+					input.val('tag2');
 					type(input.first(), RIGHT_KEY);
 					assert.isNull(tagged.selected());
 				});
@@ -262,7 +262,7 @@
 				it('should select the last tag when pressing left key if input is empty', function() {
 					input.val('tag1, another');
 					var tagged = tag.tagify('#tags');
-					input.val('')
+					input.val('');
 					type(input.first(), LEFT_KEY);
 					assert.equal(tagged.selected(), 'another');
 				});
@@ -270,7 +270,7 @@
 				it('should select the tag before when pressing left key with a tag selected', function() {
 					input.val('tag1, another');
 					var tagged = tag.tagify('#tags');
-					input.val('')
+					input.val('');
 					type(input.first(), LEFT_KEY);
 					type(input.first(), LEFT_KEY);
 					assert.equal(tagged.selected(), 'tag1');
@@ -279,7 +279,7 @@
 				it('should keep the first tag selected when pressing left key with the first tag selected', function() {
 					input.val('tag1, another');
 					var tagged = tag.tagify('#tags');
-					input.val('')
+					input.val('');
 					type(input.first(), LEFT_KEY);
 					type(input.first(), LEFT_KEY);
 					type(input.first(), LEFT_KEY);
@@ -289,7 +289,7 @@
 				it('should deselect the last tag if it was previously selected when the right key is pressed', function() {
 					input.val('tag1, another');
 					var tagged = tag.tagify('#tags');
-					input.val('')
+					input.val('');
 					type(input.first(), LEFT_KEY);
 					type(input.first(), RIGHT_KEY);
 					assert.isNull(tagged.selected());
@@ -298,11 +298,18 @@
 				it('should select the next tag when the right key is pressed and there is next tag', function() {
 					input.val('tag1, another');
 					var tagged = tag.tagify('#tags');
-					input.val('')
+					input.val('');
 					type(input.first(), LEFT_KEY);
 					type(input.first(), LEFT_KEY);
 					type(input.first(), RIGHT_KEY);
 					assert.equal(tagged.selected(), 'another');
+				});
+
+				it('should remove tag when close button was clicked', function() {
+					input.val('tag1, another');
+					var tagged = tag.tagify('#tags');
+					$('.tag .close').first().click();
+					assert.equal(tagged.tags(), 'another');
 				});
 			});
 

@@ -157,6 +157,9 @@ define('tag', ['doc'], function($) {
 
 	var tagify = function(selector) {
 		var $element = $(selector);
+		if ($element.isEmpty()) {
+			return null;
+		}
 		return new Tag($element);
 	};
 

@@ -88,6 +88,10 @@
 					var tagged = tag.tagify('#tags');
 					assert.deepEqual(tagged.tags(), ['tag1', 'another tag', 'tag2', 'another another']);
 				});
+				it('should return null if element to tagify does not exist', function() {
+					var tagged = tag.tagify('#notexists');
+					assert.isNull(tagged);
+				});
 			});
 
 			describe('Typing in a tagified input', function() {

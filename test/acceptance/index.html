@@ -349,6 +349,68 @@
 					type(input.first(), ENTER);
 					assert.equal($('.tag').size, 0);
 				});
+
+			});
+
+			describe('Validating', function() {
+				beforeEach(function() {
+					$('#test').html('<input id="tags" name="tags-name">')
+					input = $('#test').find('#tags');
+				});
+
+				it('should keep required attribute when activating without tags', function() {
+					input.val('');
+					input.attr('required', '');
+					tag.tagify('#tags');
+					assert.notOk(input.filter('required').isEmpty());
+				});
+
+				it('should keep required attribute when typing without tags', function() {
+					input.val('');
+					input.attr('required', '');
+					tag.tagify('#tags');
+					type(input.first(), CHAR_A);
+					assert.notOk(input.filter('required').isEmpty());
+				});
+
+				it('should remove required attribute when add tag', function() {
+					input.attr('required', '');
+					input.val('tag');
+					tag.tagify('#tags');
+					assert.ok(input.filter('required').isEmpty());
+				});
+
+				it('should remove required attribute after typing first tag', function() {
+					input.val('');
+					input.attr('required', '');
+					tag.tagify('#tags');
+					type(input.first(), CHAR_A);
+					type(input.first(), COMMA);
+					assert.ok(input.filter('required').isEmpty());
+				});
+
+				it('should restore required attribute after erasing last tag', function() {
+					input.val('tag');
+					input.attr('required', '');
+					tag.tagify('#tags');
+					type(input.first(), BACKSPACE);
+					assert.notOk(input.filter('required').isEmpty());
+				});
+
+				it('should not restore required attribute if there are still tags after erasing a tag', function() {
+					input.val('tag1, tag2');
+					input.attr('required', '');
+					tag.tagify('#tags');
+					type(input.first(), BACKSPACE);
+					assert.ok(input.filter('required').isEmpty());
+				});
+
+				it('should not put required attribute after erasing last tag if the input was not required', function() {
+					input.val('tag');
+					tag.tagify('#tags');
+					type(input.first(), BACKSPACE);
+					assert.ok(input.filter('required').isEmpty());
+				});
 			});
 		});
 	</script>

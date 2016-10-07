@@ -22,6 +22,7 @@ define('tag', ['doc'], function($) {
 	var Tag = function($element) {
 		var tags = [],
 			selectedTag = null,
+			isRequired = !$element.filter('required').isEmpty(),
 			$container = $(document.createElement('fieldset')),
 			$tagList = $(document.createElement('ul')),
 			$inputContainer = $(document.createElement('li'));
@@ -116,6 +117,7 @@ define('tag', ['doc'], function($) {
 			$li.addClass('tag').append($input.first());
 			$li.append($closeButton.first());
 			$tagList.first().insertBefore($li.first(), $inputContainer.first());
+			$element.removeAttr('required');
 
 			$closeButton.on('click', function(e) {
 				e.stopImmediatePropagation();
@@ -139,6 +141,9 @@ define('tag', ['doc'], function($) {
 			if(tags.splice(index, 1).length > 0) {
 				var tag = $tagList.find('.tag').els[index];
 				$(tag).removeItem();
+			}
+			if (isRequired && tags.length === 0) {
+				$element.attr('required', '');
 			}
 		};
 

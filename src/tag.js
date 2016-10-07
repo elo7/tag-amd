@@ -35,6 +35,12 @@ define('tag', ['doc'], function($) {
 			$element.focus();
 		});
 
+		$element.on('input', function(e) {
+			if (e.target.value.indexOf(',') >= 0) {
+				addTags();
+			}
+		});
+
 		$element.on('keydown', function(e) {
 			$element.removeClass('error');
 			$container.find('.selected').removeClass('selected');
@@ -43,6 +49,7 @@ define('tag', ['doc'], function($) {
 				addTags();
 			} else if (selectedTag !== null && isAnyOfTheseKeysPressed(e, [BACKSPACE, DELETE])) {
 				removeTag(selectedTag);
+				selectedTag = null;
 			} else if (isKeyPressed(e, BACKSPACE)) {
 				var currentTag = $element.val().replace(/\s/g, '');
 				if(currentTag === '') {
@@ -67,14 +74,15 @@ define('tag', ['doc'], function($) {
 				selectedTag = null;
 			}
 
-			if(selectedTag != null) {
-				focusTag(selectedTag);
-			}
+			focusTag(selectedTag);
 		});
 
 		var focusTag = function(selectedTag) {
-			var tagValue = tags[selectedTag];
-			$container.find('input[value="' + tagValue +'"]').parent().addClass('selected');
+			$tagList.find('.selected').removeClass('selected');
+			if (selectedTag !== null) {
+				var tagValue = tags[selectedTag];
+				$container.find('input[value="' + tagValue +'"]').parent().addClass('selected');
+			}
 		};
 
 		var filterUniques = function(previousArray, currentElement) {
@@ -109,17 +117,19 @@ define('tag', ['doc'], function($) {
 			$li.append($closeButton.first());
 			$tagList.first().insertBefore($li.first(), $inputContainer.first());
 
-			$closeButton.on('click', function() {
-				var index = tags.indexOf($(this).parent().find('input').val());
+			$closeButton.on('click', function(e) {
+				e.stopImmediatePropagation();
+				var index = tags.indexOf($input.val());
 				removeTag(index);
+				selectedTag = null;
+				focusTag(selectedTag);
+				$element.focus();
 			});
 
 			$li.on('click', function() {
-				$tagList.find('.selected').removeClass('selected');
-				$(this).addClass('selected');
-
-				var index = tags.indexOf($(this).find('input').val());
+				var index = tags.indexOf($input.val());
 				selectedTag = index;
+				focusTag(selectedTag);
 			});
 
 			tags.push(tag);

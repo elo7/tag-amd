@@ -4,6 +4,7 @@
 	<meta charset="UTF-8">
 	<title>Test</title>
 	<link href="mocha.css" rel="stylesheet">
+	<link href="tag.css" rel="stylesheet">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
@@ -27,18 +28,25 @@
 			RIGHT_KEY = 39,
 			CHAR_A = 65,
 			SPACEBAR = 32;
-		var type = function(element, keyCode) {
-			var evt;
+		var makeEvent = function(type) {
 			try {
-				evt = new Event('keydown');
+				return new Event(type);
 			} catch (e) {
-				evt = document.createEvent('Event');
-				evt.initEvent('keydown', true, false);
+				var evt = document.createEvent('Event');
+				evt.initEvent(type, true, false);
+				return evt;
 			}
-			evt.which = keyCode;
-			evt.keyCode = keyCode;
-
-			element.dispatchEvent(evt);
+		};
+		var type = function(element, keyCode) {
+			var keyDown = makeEvent('keydown');
+			keyDown.which = keyCode;
+			keyDown.keyCode = keyCode;
+			element.dispatchEvent(keyDown);
+			if (keyCode === CHAR_A || keyCode === SPACEBAR) {
+				var inputEvent = makeEvent('input');
+				element.value += String.fromCharCode(keyCode);
+				element.dispatchEvent(inputEvent);
+			}
 		};
 	</script>
 
@@ -156,9 +164,8 @@
 					input.val('tag1');
 					type(input.first(), COMMA);
 					type(input.first(), CHAR_A);
-					input.val(input.val() + 'a'); // Simulate typing
 					type(input.first(), COMMA);
-					assert.deepEqual(tagged.tags(), ['tag1', 'a']);
+					assert.deepEqual(tagged.tags(), ['tag1', 'A']);
 				});
 			});
 

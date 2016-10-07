@@ -11,12 +11,12 @@
 	padding-left: 0;
 }
 
-.tags-container .tags li {
+.tags-container li {
 	display: inline-block;
 	margin-bottom: 0.5em;
 }
 
-.tags-container .tags .tag {
+.tags-container .tag {
 	background-color: lightgray;
 	padding: 0.2em 0.5em;
 	margin-right: 0.5em;
@@ -25,17 +25,17 @@
 	padding-right: 1.5em;
 }
 
-.tags-container .tags .tag.selected {
+.tags-container .tag.selected {
 	background-color: gray;
 }
 
-.tags-container .tags .input-tag input {
+.tags-container input {
 	outline: 0;
 	border: 0;
 	font-size: inherit;
 }
 
-.tags-container .tags .close {
+.tags-container .close {
 	background: none;
 	border: none;
 	font-size: inherit;
@@ -49,6 +49,6 @@
 	transform: translateY(-50%);
 }
 
-.tags-container .tags .input-tag .error {
+.tags-container .error {
 	color: red;
 }

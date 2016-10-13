@@ -131,13 +131,14 @@
 					assert.deepEqual(tagged.tags(), ['tag1']);
 				});
 
-				it('should not remove last tag when has text and backspace is typed', function() {
+				it('should not select nor remove last tag when has text and backspace is typed', function() {
 					input.val('tag1, tag2');
 					var tagged = tag.tagify('#tags');
 					input.val(input.val() + 'another-tag');
 					assert.lengthEquals(tagged.tags(), 2);
 					type(input.first(), BACKSPACE);
 					assert.deepEqual(tagged.tags(), ['tag1', 'tag2']);
+					assert.isNull(tagged.selected());
 				});
 
 				it('should do nothing when backspace is typed and there are no tags', function() {
@@ -145,6 +146,14 @@
 					assert.lengthEquals(tagged.tags(), 0);
 					type(input.first(), BACKSPACE);
 					assert.lengthEquals(tagged.tags(), 0);
+					assert.isNull(tagged.selected());
+				});
+
+				it('should do nothing when left arrow is typed and there are no tags', function() {
+					var tagged = tag.tagify('#tags');
+					assert.isNull(tagged.selected());
+					type(input.first(), LEFT_KEY);
+					assert.isNull(tagged.selected());
 				});
 
 				it('should add all tags in the input when comma is typed', function() {
@@ -217,6 +226,15 @@
 					assert.equal(tagged.selected(), 'another');
 				});
 
+				it('should select the last tag and not remove it when pressing backspace key if input is empty', function() {
+					input.val('tag1, another');
+					var tagged = tag.tagify('#tags');
+					input.val('');
+					type(input.first(), BACKSPACE);
+					assert.equal(tagged.selected(), 'another');
+					assert.deepEqual(tagged.tags(), ['tag1', 'another']);
+				});
+
 				it('should select the tag before when pressing left key with a tag selected', function() {
 					input.val('tag1, another');
 					var tagged = tag.tagify('#tags');
@@ -280,13 +298,6 @@
 					tag.tagify('#tags');
 					assert.notOk($('input[value="tag"]').isEmpty());
 					assert.notOk($('input[value="another-tag"]').isEmpty());
-				});
-
-				it('should remove tag on backspace', function() {
-					input.val('tag');
-					tag.tagify('#tags');
-					type(input.first(), BACKSPACE);
-					assert.ok($('input[value="tag"]').isEmpty());
 				});
 
 				it('should add an error class when trying to add repeated tag', function() {
@@ -393,6 +404,7 @@
 					input.val('tag');
 					input.attr('required', '');
 					tag.tagify('#tags');
+					type(input.first(), BACKSPACE);
 					type(input.first(), BACKSPACE);
 					assert.notOk(input.filter('required').isEmpty());
 				});

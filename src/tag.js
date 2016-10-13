@@ -44,22 +44,15 @@ define('tag', ['doc'], function($) {
 
 		$element.on('keydown', function(e) {
 			$element.removeClass('error');
-			$container.find('.selected').removeClass('selected');
 			if (isAnyOfTheseKeysPressed(e, [ENTER, COMMA, TAB])) {
 				e.preventDefault();
 				addTags();
 			} else if (selectedTag !== null && isAnyOfTheseKeysPressed(e, [BACKSPACE, DELETE])) {
 				removeTag(selectedTag);
 				selectedTag = null;
-			} else if (isKeyPressed(e, BACKSPACE)) {
-				var currentTag = $element.val().replace(/\s/g, '');
-				if(currentTag === '') {
-					e.preventDefault();
-					removeTag(tags.length - 1);
-				}
-			} else if (isKeyPressed(e, LEFT_KEY)) {
+			} else if (isAnyOfTheseKeysPressed(e, [BACKSPACE, LEFT_KEY])) {
 				if ($element.val() === '') {
-					if (selectedTag === null) {
+					if (selectedTag === null && tags.length > 0) {
 						selectedTag = tags.length - 1;
 					} else if (selectedTag > 0) {
 						selectedTag--;

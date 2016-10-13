@@ -32,17 +32,14 @@ define('tag', ['doc'], function($) {
 		$element.parent().first().insertBefore($container.first(), $element.first());
 		$tagList.append($inputContainer.first());
 		$inputContainer.addClass('input-tag').append($element.first());
-		$container.on('click', function() {
-			$element.focus();
-		});
 
-		$element.on('input', function(e) {
+		$container.on('input', function(e) {
 			if (e.target.value.indexOf(',') >= 0) {
 				addTags();
 			}
 		});
 
-		$element.on('keydown', function(e) {
+		$container.on('keydown', function(e) {
 			$element.removeClass('error');
 			if (isAnyOfTheseKeysPressed(e, [ENTER, COMMA, TAB])) {
 				e.preventDefault();
@@ -72,10 +69,11 @@ define('tag', ['doc'], function($) {
 		});
 
 		var focusTag = function(selectedTag) {
-			$tagList.find('.selected').removeClass('selected');
 			if (selectedTag !== null) {
 				var tagValue = tags[selectedTag];
-				$container.find('input[value="' + tagValue +'"]').parent().addClass('selected');
+				$container.find('input[value="' + tagValue +'"]').parent().focus();
+			} else {
+				$element.focus();
 			}
 		};
 
@@ -107,6 +105,7 @@ define('tag', ['doc'], function($) {
 			$closeButton.addClass('close').html('&times;');
 			$input.attr('type', 'hidden').attr('name', $element.attr('name')).val(tag);
 			$li.text(tag);
+			$li.attr('tabindex', '1');
 			$li.addClass('tag').append($input.first());
 			$li.append($closeButton.first());
 			$tagList.first().insertBefore($li.first(), $inputContainer.first());

@@ -30,7 +30,7 @@
 			SPACEBAR = 32;
 		var makeEvent = function(type) {
 			try {
-				return new Event(type);
+				return new Event(type, { bubbles: true });
 			} catch (e) {
 				var evt = document.createEvent('Event');
 				evt.initEvent(type, true, false);
@@ -323,7 +323,7 @@
 					input.val('tag, tag2');
 					tag.tagify('#tags');
 					type(input.first(), LEFT_KEY);
-					assert.equal($('.tag.selected').first(), $('input[value="tag2"]').parent().first());
+					assert.equal(document.activeElement, $('input[value="tag2"]').parent().first());
 				});
 
 				it('should focus on first tag when typing left arrow key two times', function() {
@@ -331,7 +331,7 @@
 					tag.tagify('#tags');
 					type(input.first(), LEFT_KEY);
 					type(input.first(), LEFT_KEY);
-					assert.equal($('.tag.selected').first(), $('input[value="tag"]').parent().first());
+					assert.equal(document.activeElement, $('input[value="tag"]').parent().first());
 				});
 
 				it('should remove first tag when typing left arrow key two times and pressing backspace', function() {

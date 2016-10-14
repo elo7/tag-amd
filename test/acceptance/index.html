@@ -30,7 +30,7 @@
 			SPACEBAR = 32;
 		var makeEvent = function(type) {
 			try {
-				return new Event(type);
+				return new Event(type, { bubbles: true });
 			} catch (e) {
 				var evt = document.createEvent('Event');
 				evt.initEvent(type, true, false);
@@ -47,6 +47,10 @@
 				element.value += String.fromCharCode(keyCode);
 				element.dispatchEvent(inputEvent);
 			}
+		};
+		var click = function(element) {
+			var click = makeEvent('click');
+			element.dispatchEvent(click);
 		};
 	</script>
 
@@ -361,6 +365,14 @@
 					assert.equal($('.tag').size, 0);
 				});
 
+				it('should focus tag field if last tag is selected and right key is pressed', function() {
+					input.val('tag');
+					tag.tagify('#tags');
+					click($('input[value="tag"]').parent().first());
+					assert.notEqual(input.first(), document.activeElement);
+					type(input.closest('.tags-container').first(), RIGHT_KEY);
+					assert.equal(input.first(), document.activeElement);
+				});
 			});
 
 			describe('Validating', function() {

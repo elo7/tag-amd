@@ -5,6 +5,10 @@
 	border-radius: 3px;
 }
 
+.tags-container:focus {
+	outline: none;
+}
+
 .tags-container .tags {
 	list-style: none;
 	margin: 0.5em 0.5em 0;

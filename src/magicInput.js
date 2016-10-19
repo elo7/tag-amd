@@ -7,4 +7,15 @@ for (var i=0, length=input.length; i < length; i++) {
 	var parent = input[i].parentNode;
 	parent.insertBefore(div, input[i]);
 	div.appendChild(input[i]);
+
+	input[i].addEventListener('keypress', function(e){
+		if(e.code === 'Comma'){
+			var span = document.createElement('span');
+			span.innerHTML = this.value;
+			span.className = 'tag';
+			div.insertBefore(span, this);
+			this.value = "";
+			e.preventDefault();
+		}
+	});
 }

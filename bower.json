@@ -1,6 +1,6 @@
 {
   "name": "tag-amd",
-  "version": "1.0.0",
+  "version": "1.0.1-SNAPSHOT",
   "description": "Transform an input into a tag field",
   "main": "tag.js",
   "authors": [

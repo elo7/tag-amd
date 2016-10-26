@@ -9,6 +9,7 @@ for (var i=0, length=input.length; i < length; i++) {
 	div.appendChild(input[i]);
 
 	input[i].addEventListener('keypress', function(e){
+		console.log(e);
 		if(e.code === 'Comma'){
 			var span = document.createElement('span');
 			span.innerHTML = this.value;

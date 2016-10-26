@@ -9,7 +9,6 @@ for (var i=0, length=input.length; i < length; i++) {
 	div.appendChild(input[i]);
 
 	input[i].addEventListener('keypress', function(e){
-		console.log(e);
 		if(e.code === 'Comma'){
 			var span = document.createElement('span');
 			span.innerHTML = this.value;
@@ -17,6 +16,15 @@ for (var i=0, length=input.length; i < length; i++) {
 			div.insertBefore(span, this);
 			this.value = "";
 			e.preventDefault();
+
+			var close = document.createElement('a');
+			close.className = "close";
+			close.innerHTML = "&times;";
+
+			close.addEventListener("click", function(){
+				 close.parentNode.remove();
+			});
+			span.appendChild(close);
 		}
 	});
 }

@@ -6,9 +6,13 @@
     "WebDriverIO": {
       "url": "http://localhost:3000",
       "browser": "chrome"
+    },
+    "Tag": {
+      "require": "./tag_helper.js"
     }
   },
   "bootstrap": false,
   "mocha": {},
-  "name": "tag-amd"
+  "name": "tag-amd",
+  "include": {}
 }

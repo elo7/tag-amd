@@ -27,4 +27,16 @@ for (var i=0, length=input.length; i < length; i++) {
 			span.appendChild(close);
 		}
 	});
+
+	input[i].addEventListener('keydown', function(e){
+		if(e.code === 'Backspace') {
+
+			var tag = this.parentNode.querySelector('.tag:last-of-type');
+
+			if(tag !== null && this.value === '') {
+				e.preventDefault();
+				tag.remove();
+			}
+		}
+	});
 }

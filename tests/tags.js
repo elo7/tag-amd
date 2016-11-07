@@ -28,7 +28,7 @@ Scenario('should fill field and generate tags', function*(I) {
 	I.waitForElement('.tag-container .tag', 5);
 	I.seeNumberOfElements('.tag-container .tag', 2);
 
-	let tag2 = yield I.grabTextFrom('.tag-container .tag:nth-child(2)');
+	let tag2 = yield I.grabTextFrom('.tag-container .tag-wrapper:nth-child(2) .tag');
 	assert.equal(tag2, 'test two');
 });
 
@@ -39,14 +39,14 @@ Scenario('should remove a tag when clicked or backspace is pressed and input emp
 	I.fillField('.tag-container input[data-tags]', "test");
 	I.sendKeypressEvent('.tag-container input[data-tags]', 'Comma');
 
-	I.seeElement('.tag .close');
-	I.click('.tag .close');
-	I.dontSeeElement('.tag');
+	I.seeElement('.tag-wrapper .close');
+	I.click('.tag-wrapper .close');
+	I.dontSeeElement('.tag-wrapper');
 
 	I.fillField('.tag-container input[data-tags]', "test");
 	I.sendKeypressEvent('.tag-container input[data-tags]', 'Comma');
 	I.sendKeydownEvent('.tag-container input[data-tags]', 'Backspace');
-	I.dontSeeElement('.tag');
+	I.dontSeeElement('.tag-wrapper');
 
 	I.fillField('.tag-container input[data-tags]', "test");
 	I.sendKeypressEvent('.tag-container input[data-tags]', 'Comma');
@@ -54,14 +54,14 @@ Scenario('should remove a tag when clicked or backspace is pressed and input emp
 	I.fillField('.tag-container input[data-tags]', "aa");
 	I.sendKeydownEvent('.tag-container input[data-tags]', 'Backspace');
 	I.seeInField('.tag-container input[data-tags]', "a");
-	I.seeElement('.tag');
+	I.seeElement('.tag-wrapper');
 
 	I.sendKeydownEvent('.tag-container input[data-tags]', 'Backspace');
 	I.seeInField('.tag-container input[data-tags]', "");
-	I.seeElement('.tag');
+	I.seeElement('.tag-wrapper');
 
 	I.sendKeydownEvent('.tag-container input[data-tags]', 'Backspace');
-	I.dontSeeElement('.tag');
+	I.dontSeeElement('.tag-wrapper');
 });
 
 

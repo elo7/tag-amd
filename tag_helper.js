@@ -36,6 +36,16 @@ class Tag extends Helper {
       }
     }, selector, code);
   }
+
+  sendKeyupEvent(selector, code) {
+    return this.helpers['WebDriverIO'].executeScript(function(selector, code) {
+      var input = document.querySelector(selector);
+      var event = new Event("keyup");
+      event.code = code;
+      input.dispatchEvent(event);
+    }, selector, code);
+  }
+
 }
 
 module.exports = Tag;

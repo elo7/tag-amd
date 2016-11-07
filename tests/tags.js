@@ -46,6 +46,7 @@ Scenario('should remove a tag when clicked or backspace is pressed and input emp
 	I.fillField('.tag-container input[data-tags]', "test");
 	I.sendKeypressEvent('.tag-container input[data-tags]', 'Comma');
 	I.sendKeydownEvent('.tag-container input[data-tags]', 'Backspace');
+	I.sendKeyupEvent('.tag-container input[data-tags]', 'Backspace');
 	I.dontSeeElement('.tag-wrapper');
 
 	I.fillField('.tag-container input[data-tags]', "test");
@@ -53,15 +54,35 @@ Scenario('should remove a tag when clicked or backspace is pressed and input emp
 
 	I.fillField('.tag-container input[data-tags]', "aa");
 	I.sendKeydownEvent('.tag-container input[data-tags]', 'Backspace');
+	I.sendKeyupEvent('.tag-container input[data-tags]', 'Backspace');
 	I.seeInField('.tag-container input[data-tags]', "a");
 	I.seeElement('.tag-wrapper');
 
 	I.sendKeydownEvent('.tag-container input[data-tags]', 'Backspace');
+	I.sendKeyupEvent('.tag-container input[data-tags]', 'Backspace');
 	I.seeInField('.tag-container input[data-tags]', "");
 	I.seeElement('.tag-wrapper');
 
 	I.sendKeydownEvent('.tag-container input[data-tags]', 'Backspace');
+	I.sendKeyupEvent('.tag-container input[data-tags]', 'Backspace');
 	I.dontSeeElement('.tag-wrapper');
+});
+
+Scenario('should not remove tags if backspace was removing text', (I) => {
+	I.amOnPage('/index.html');
+	I.waitForElement('.tag-container', 5);
+
+	I.fillField('.tag-container input[data-tags]', "test");
+	I.sendKeypressEvent('.tag-container input[data-tags]', 'Comma');
+
+	I.fillField('.tag-container input[data-tags]', "other-test");
+
+	for (var i = 30; i > 0; i--) {
+		I.sendKeydownEvent('.tag-container input[data-tags]', 'Backspace');
+	}
+
+	I.sendKeyupEvent('.tag-container input[data-tags]', 'Backspace');
+	I.seeElement('.tag-wrapper');
 });
 
 

@@ -33,15 +33,27 @@ for (var i=0, length=input.length; i < length; i++) {
 		}
 	});
 
-	input[i].addEventListener('keydown', function(e){
+	var filled;
+
+	input[i].addEventListener('keydown', function(e) {
+		var value = this.value;
+
 		if(e.code === 'Backspace') {
+
+			if(value !== '' || filled) {
+				filled = true;
+				return;
+			}
 
 			var tag = this.parentNode.querySelector('.tag-wrapper:last-of-type');
 
-			if(tag !== null && this.value === '') {
-				e.preventDefault();
+			if(tag !== null) {
 				tag.remove();
 			}
 		}
+	});
+
+	input[i].addEventListener('keyup', function(e){
+		filled = undefined;
 	});
 }

@@ -16,6 +16,7 @@ for (var i=0, length=input.length; i < length; i++) {
 			var span = document.createElement('span');
 			span.innerHTML = this.value;
 			span.className = 'tag';
+			span.tabIndex = 0;
 			div.insertBefore(tagWrapper, this);
 			this.value = "";
 			e.preventDefault();
@@ -23,6 +24,7 @@ for (var i=0, length=input.length; i < length; i++) {
 			var close = document.createElement('a');
 			close.className = "close";
 			close.innerHTML = "&times;";
+			close.href = "#";
 
 			close.addEventListener("click", function(){
 				 close.parentNode.remove();

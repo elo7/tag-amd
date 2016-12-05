@@ -1,6 +1,8 @@
 
 Feature('Tags');
 
+let assert = require('assert');
+
 Scenario('should show styled tags only on inputs with the attribute data-tags', (I) => {
 	I.amOnPage('/index.html');
 	I.waitForElement('.tag-container', 5);
@@ -9,7 +11,6 @@ Scenario('should show styled tags only on inputs with the attribute data-tags', 
 });
 
 Scenario('should fill field and generate tags', function*(I) {
-	let assert = require('assert');
 
 	I.amOnPage('/index.html');
 	I.waitForElement('.tag-container', 5);
@@ -83,6 +84,20 @@ Scenario('should not remove tags if backspace was removing text', (I) => {
 
 	I.sendKeyupEvent('.tag-container input[data-tags]', 'Backspace');
 	I.seeElement('.tag-wrapper');
+});
+
+Scenario('should get tags separated by comma over the response', function*(I) {
+	I.amOnPage('/index.html');
+	I.waitForElement('.tag-container', 5);
+	I.fillField('.tag-container input[data-tags]', "tag1");
+	I.sendKeypressEvent('.tag-container input[data-tags]', 'Comma');
+	I.fillField('.tag-container input[data-tags]', "tag2");
+	I.sendKeypressEvent('.tag-container input[data-tags]', 'Comma');
+
+	I.click('input[type=submit]');
+
+	let response = yield I.grabTextFrom('.tags');
+	assert.equal(response, 'tags: tag1,tag2');
 });
 
 

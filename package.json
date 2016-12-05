@@ -23,9 +23,10 @@
   },
   "homepage": "https://github.com/elo7/tag-amd#readme",
   "devDependencies": {
+    "body-parser": "^1.15.2",
     "bower": "1.7.9",
     "codeceptjs": "0.4.5",
-    "webdriverio": "4.2.16",
-    "express": "^4.14.0"
+    "express": "^4.14.0",
+    "webdriverio": "4.2.16"
   }
 }

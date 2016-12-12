@@ -1,58 +1,90 @@
 (function() {
 	'use strict';
 
-	function addToInput(input, value) {
-		if (input.value != '') {
-			input.value += ',';
+	function FieldToSendValues(name) {
+		var inputHidden = document.createElement('input');
+		inputHidden.name = name;
+		inputHidden.type = 'hidden';
+
+		this.addTag = function(tag) {
+			if (inputHidden.value != '') {
+				inputHidden.value += ',';
+			}
+			inputHidden.value += tag;
+		};
+
+		this.appendTo = function(el) {
+			el.appendChild(inputHidden);
+		};
+	}
+
+	function Tag(value) {
+		var span = document.createElement('span'),
+			close = document.createElement('a');
+
+		span.innerHTML = value;
+		span.className = 'tag';
+		span.tabIndex = 0;
+
+		close.className = "close";
+		close.innerHTML = "&times;";
+		close.href = "#";
+
+		this.closeOnClick = function() {
+			close.addEventListener('click', this.close);
+		};
+
+		this.close = function() {
+			close.parentNode.remove();
+		};
+
+		this.appendTo = function(el) {
+			el.appendChild(span);
+			el.appendChild(close);
+		};
+	}
+
+	function setTags(e, inputHidden) {
+		if(e.code === 'Comma' || e.code === 'Enter') {
+			var tagWrapper = document.createElement('div'),
+				value = e.target.value,
+				tag = new Tag(value);
+
+			tagWrapper.className = 'tag-wrapper';
+			inputHidden.addTag(value);
+
+			div.insertBefore(tagWrapper, e.target);
+
+			e.target.value = "";
+
+			tag.appendTo(tagWrapper);
+			tag.closeOnClick();
+
+			e.preventDefault();
+
 		}
-		input.value += value;
 	}
 
 	var input = document.querySelectorAll("input[data-tags]");
+
 	for (var i=0, length=input.length; i < length; i++) {
+
 		var div = document.createElement('div');
 		div.className = 'tag-container';
 
-		var inputHidden = document.createElement('input');
-		inputHidden.type = 'hidden';
-		var name = input[i].name;
+		var name = input[i].name,
+			parent = input[i].parentNode,
+			inputHidden = new FieldToSendValues(name);
+
 		input[i].name = "";
-		inputHidden.name = name;
 
-		var parent = input[i].parentNode;
 		parent.insertBefore(div, input[i]);
+
 		div.appendChild(input[i]);
-		div.appendChild(inputHidden);
+		inputHidden.appendTo(div);
 
-		input[i].addEventListener('keypress', function(e){
-			if(e.code === 'Comma' || e.code === 'Enter'){
-				var tagWrapper = document.createElement('div');
-				tagWrapper.className = 'tag-wrapper';
-
-				var span = document.createElement('span');
-				var value = this.value;
-
-				addToInput(inputHidden, value);
-
-				span.innerHTML = value;
-				span.className = 'tag';
-				span.tabIndex = 0;
-				div.insertBefore(tagWrapper, this);
-				this.value = "";
-				e.preventDefault();
-
-				var close = document.createElement('a');
-				close.className = "close";
-				close.innerHTML = "&times;";
-				close.href = "#";
-
-				close.addEventListener("click", function(){
-					 close.parentNode.remove();
-				});
-
-				tagWrapper.appendChild(span);
-				tagWrapper.appendChild(close);
-			}
+		input[i].addEventListener('keypress', function(e) {
+			setTags(e, inputHidden);
 		});
 
 		var filled;

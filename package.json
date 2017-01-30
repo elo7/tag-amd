@@ -24,8 +24,8 @@
   },
   "homepage": "https://github.com/elo7/tag-amd#readme",
   "dependencies": {
-    "define-async": "1.1.0",
-    "elo7-doc-amd": "1.0.14"
+    "define-async": "1.1.1",
+    "elo7-doc-amd": "1.1.1"
   },
   "devDependencies": {
     "bower": "1.7.9",

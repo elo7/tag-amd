@@ -1,6 +1,6 @@
 {
-  "name": "tag-amd",
-  "version": "1.0.2-SNAPSHOT",
+  "name": "elo7-tag-amd",
+  "version": "1.1.1",
   "description": "Transform an input into a tag field",
   "main": "tag.js",
   "scripts": {
@@ -23,6 +23,10 @@
     "url": "https://github.com/elo7/tag-amd/issues"
   },
   "homepage": "https://github.com/elo7/tag-amd#readme",
+  "dependencies": {
+    "define-async": "1.1.1",
+    "elo7-doc-amd": "1.1.1"
+  },
   "devDependencies": {
     "bower": "1.7.9",
     "express": "4.14.0",

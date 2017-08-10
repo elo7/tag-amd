@@ -103,7 +103,7 @@ define('tag', ['doc'], function($) {
 			var $li = $(document.createElement('li')),
 				$input = $(document.createElement('input')),
 				$closeButton = $(document.createElement('button'));
-			$closeButton.addClass('close').html('&times;');
+			$closeButton.attr('type', 'button').addClass('close').html('&times;');
 			$input.attr('type', 'hidden').attr('name', $element.attr('name')).val(tag);
 			$li.text(tag);
 			$li.addClass('tag').append($input.first());

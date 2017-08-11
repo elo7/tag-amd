@@ -1,6 +1,6 @@
 {
   "name": "tag-amd",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Transform an input into a tag field",
   "main": "tag.js",
   "authors": [
@@ -22,9 +22,6 @@
     "tests"
   ],
   "dependencies": {
-    "doc-amd": "1.0.12"
-  },
-  "devDependencies": {
-    "async-define": "elo7/async-define#1.0.5"
+    "doc-amd": "1.1.1"
   }
 }

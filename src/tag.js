@@ -19,7 +19,7 @@ define('tag', ['doc'], function($) {
 		});
 	};
 
-	var Tag = function($element) {
+	var Tag = function($element, options) {
 		var tags = [],
 			selectedTag = null,
 			isRequired = !$element.filter('required').isEmpty(),
@@ -40,7 +40,11 @@ define('tag', ['doc'], function($) {
 		});
 
 		$container.on('keydown', function(e) {
+			var hadError = $element.hasClass('error');
 			$element.removeClass('error');
+			if (hadError && options && options.errorCleared && options.errorCleared.call) {
+				options.errorCleared.call(null, $element.first());
+			}
 			if ($element.val() !== '' && isAnyOfTheseKeysPressed(e, [ENTER, COMMA, TAB])) {
 				e.preventDefault();
 				addTags();
@@ -94,8 +98,14 @@ define('tag', ['doc'], function($) {
 					addTag(tagsToAdd[i]);
 				}
 				$element.val('');
+				if (options && options.added && options.added.call) {
+					options.added.call(null, tagsToAdd);
+				}
 			} else {
 				$element.addClass('error');
+				if (options && options.error && options.error.call) {
+					options.error.call(null, $element.first());
+				}
 			}
 		};
 
@@ -152,12 +162,12 @@ define('tag', ['doc'], function($) {
 		};
 	};
 
-	var tagify = function(selector) {
+	var tagify = function(selector, options) {
 		var $element = $(selector);
 		if ($element.isEmpty()) {
 			return null;
 		}
-		return new Tag($element);
+		return new Tag($element, options);
 	};
 
 	return {

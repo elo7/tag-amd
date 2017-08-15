@@ -338,6 +338,65 @@
 					assert.notOk(input.hasClass('error'));
 				});
 
+				it('should call errorCleared callback with input as parameter when removing error class', function(done) {
+					input.val('tag');
+					tag.tagify('#tags', {
+						errorCleared: function(parameter) {
+							assert.equal(parameter, input.first());
+							done();
+						}
+					});
+					input.val('tag');
+					type(input.first(), COMMA);
+					type(input.first(), CHAR_A);
+				});
+
+				it('should call error callback with input as argument when adding error class', function(done) {
+					input.val('tag');
+					tag.tagify('#tags', {
+						error: function(parameter) {
+							assert.equal(parameter, input.first());
+							done();
+						}
+					});
+					input.val('tag');
+					type(input.first(), COMMA);
+				});
+
+				it('should not call added callback when adding error class', function() {
+					var calls = 0;
+					input.val('tag');
+					tag.tagify('#tags', {
+						added: function(parameter) {
+							assert.lessThan(++calls, 2, 'number of calls should be less than 2');
+						}
+					});
+					input.val('tag');
+					type(input.first(), ENTER);
+				});
+
+				it('should not call error callback when adding a tag', function() {
+					input.val('tag1');
+					tag.tagify('#tags', {
+						error: function(parameter) {
+							assert.fail('called error callback', 'should not call');
+						}
+					});
+					input.val('tag2');
+					type(input.first(), COMMA);
+				});
+
+				it('should call added callback with new tags as parameter when adding a tag', function(done) {
+					tag.tagify('#tags', {
+						added: function(parameter) {
+							assert.deepEqual(['tag1', 'tag2'], parameter);
+							done();
+						}
+					});
+					input.val('tag1,tag2');
+					type(input.first(), ENTER);
+				});
+
 				it('should focus on second tag when typing left arrow key', function() {
 					input.val('tag, tag2');
 					tag.tagify('#tags');

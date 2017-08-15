@@ -41,7 +41,7 @@ define('tag', ['doc'], function($) {
 
 		$container.on('keydown', function(e) {
 			$element.removeClass('error');
-			if (isAnyOfTheseKeysPressed(e, [ENTER, COMMA, TAB])) {
+			if ($element.val() !== '' && isAnyOfTheseKeysPressed(e, [ENTER, COMMA, TAB])) {
 				e.preventDefault();
 				addTags();
 			} else if (selectedTag !== null && isAnyOfTheseKeysPressed(e, [BACKSPACE, DELETE])) {

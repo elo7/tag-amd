@@ -127,12 +127,27 @@
 					assert.deepEqual(tagged.tags(), ['tag1']);
 				});
 
+				it('should not try to add tags when enter is typed and no text is present in the input', function() {
+					var tagged = tag.tagify('#tags');
+					input.val('');
+					type(input.first(), ENTER);
+					assert.notOk(input.hasClass('error'));
+				});
+
+
 				it('should create a new tag when tab is typed', function() {
 					var tagged = tag.tagify('#tags');
 					input.val('tag1');
 					assert.lengthEquals(tagged.tags(), 0);
 					type(input.first(), TAB);
 					assert.deepEqual(tagged.tags(), ['tag1']);
+				});
+
+				it('should not try to add tags when tab is typed and no text is present in the input', function() {
+					var tagged = tag.tagify('#tags');
+					input.val('');
+					type(input.first(), TAB);
+					assert.notOk(input.hasClass('error'));
 				});
 
 				it('should not select nor remove last tag when has text and backspace is typed', function() {

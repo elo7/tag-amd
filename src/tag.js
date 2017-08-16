@@ -125,6 +125,9 @@ define('tag', ['doc'], function($) {
 			if (elementMaxlength) {
 				var computedMaxlength = parseInt(elementMaxlength, 10) - tag.length - 1;
 				$element.attr('maxlength', Math.max(0, computedMaxlength));
+				if (computedMaxlength <= 0 && options && options.maxlengthExceeded && options.maxlengthExceeded.call) {
+					options.maxlengthExceeded.call(null);
+				}
 			}
 
 			$closeButton.on('click', function(e) {

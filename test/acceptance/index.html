@@ -635,6 +635,26 @@
 					type(input.first(), BACKSPACE);
 					type(input.first(), BACKSPACE);
 				});
+
+				it('should call maxlengthExceeded callback when reaching input maxlength limit', function(done) {
+					input.val('senhoru,vasco,thiago');
+					input.attr('maxlength', '20');
+					tag.tagify('#tags', {
+						maxlengthExceeded: function() {
+							done();
+						}
+					});
+				});
+
+				it('should not call maxlengthExceeded callback when adding tags but not reaching input maxlength limit', function() {
+					input.val('senhoru,vasco,thi');
+					input.attr('maxlength', '20');
+					tag.tagify('#tags', {
+						maxlengthExceeded: function() {
+							assert.fail('called maxlengthExceeded callback', 'should not call');
+						}
+					});
+				});
 			});
 		});
 	</script>

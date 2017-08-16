@@ -468,11 +468,11 @@
 						assert.isNull(input.attr('maxlength'));
 					});
 
-					it('should update maxlength after adding a single tag if maxlength is present', function() {
+					it('should update maxlength accounting for the separator after adding a single tag if maxlength is present', function() {
 						input.val('tag');
 						input.attr('maxlength', '200');
 						tag.tagify('#tags');
-						assert.equal(input.attr('maxlength'), '197');
+						assert.equal(input.attr('maxlength'), '196');
 					});
 
 					it('should update maxlength after adding a second tag if maxlength is present', function() {
@@ -480,7 +480,7 @@
 							tag2 = 'tag2',
 							separatorLength = 1,
 							initialMaxlength = 200,
-							finalMaxlength = initialMaxlength - tag1.length - separatorLength - tag2.length;
+							finalMaxlength = initialMaxlength - tag1.length - separatorLength - tag2.length - separatorLength;
 
 						input.val(tag1);
 						input.attr('maxlength', '200');
@@ -513,8 +513,8 @@
 							tag2 = 'tag2',
 							separator = ',',
 							initialMaxlength = 200,
-							intermediateMaxlength = initialMaxlength - tag1.length - separator.length - tag2.length,
-							finalMaxlength = initialMaxlength - tag1.length;
+							intermediateMaxlength = initialMaxlength - tag1.length - separator.length - tag2.length - separator.length,
+							finalMaxlength = initialMaxlength - tag1.length - separator.length;
 
 						input.val(tag1 + separator + tag2);
 						input.attr('maxlength', initialMaxlength);

@@ -165,6 +165,9 @@ define('tag', ['doc'], function($) {
 			if (isRequired && tags.length === 0) {
 				$element.attr('required', '');
 			}
+			if (options && options.removed && options.removed.call) {
+				options.removed.call(null, tagToRemove);
+			}
 		};
 
 		addTags();

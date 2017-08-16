@@ -338,65 +338,6 @@
 					assert.notOk(input.hasClass('error'));
 				});
 
-				it('should call errorCleared callback with input as parameter when removing error class', function(done) {
-					input.val('tag');
-					tag.tagify('#tags', {
-						errorCleared: function(parameter) {
-							assert.equal(parameter, input.first());
-							done();
-						}
-					});
-					input.val('tag');
-					type(input.first(), COMMA);
-					type(input.first(), CHAR_A);
-				});
-
-				it('should call error callback with input as argument when adding error class', function(done) {
-					input.val('tag');
-					tag.tagify('#tags', {
-						error: function(parameter) {
-							assert.equal(parameter, input.first());
-							done();
-						}
-					});
-					input.val('tag');
-					type(input.first(), COMMA);
-				});
-
-				it('should not call added callback when adding error class', function() {
-					var calls = 0;
-					input.val('tag');
-					tag.tagify('#tags', {
-						added: function(parameter) {
-							assert.lessThan(++calls, 2, 'number of calls should be less than 2');
-						}
-					});
-					input.val('tag');
-					type(input.first(), ENTER);
-				});
-
-				it('should not call error callback when adding a tag', function() {
-					input.val('tag1');
-					tag.tagify('#tags', {
-						error: function(parameter) {
-							assert.fail('called error callback', 'should not call');
-						}
-					});
-					input.val('tag2');
-					type(input.first(), COMMA);
-				});
-
-				it('should call added callback with new tags as parameter when adding a tag', function(done) {
-					tag.tagify('#tags', {
-						added: function(parameter) {
-							assert.deepEqual(['tag1', 'tag2'], parameter);
-							done();
-						}
-					});
-					input.val('tag1,tag2');
-					type(input.first(), ENTER);
-				});
-
 				it('should focus on second tag when typing left arrow key', function() {
 					input.val('tag, tag2');
 					tag.tagify('#tags');
@@ -449,131 +390,227 @@
 				});
 			});
 
-			describe('Validating', function() {
+			describe('Validation', function() {
+				describe('Updating required attribute', function() {
+					beforeEach(function() {
+						$('#test').html('<input id="tags" name="tags-name">')
+						input = $('#test').find('#tags');
+					});
+
+					it('should keep required attribute when activating without tags', function() {
+						input.val('');
+						input.attr('required', '');
+						tag.tagify('#tags');
+						assert.notOk(input.filter('required').isEmpty());
+					});
+
+					it('should keep required attribute when typing without tags', function() {
+						input.val('');
+						input.attr('required', '');
+						tag.tagify('#tags');
+						type(input.first(), CHAR_A);
+						assert.notOk(input.filter('required').isEmpty());
+					});
+
+					it('should remove required attribute when add tag', function() {
+						input.attr('required', '');
+						input.val('tag');
+						tag.tagify('#tags');
+						assert.ok(input.filter('required').isEmpty());
+					});
+
+					it('should remove required attribute after typing first tag', function() {
+						input.val('');
+						input.attr('required', '');
+						tag.tagify('#tags');
+						type(input.first(), CHAR_A);
+						type(input.first(), COMMA);
+						assert.ok(input.filter('required').isEmpty());
+					});
+
+					it('should restore required attribute after erasing last tag', function() {
+						input.val('tag');
+						input.attr('required', '');
+						tag.tagify('#tags');
+						type(input.first(), BACKSPACE);
+						type(input.first(), BACKSPACE);
+						assert.notOk(input.filter('required').isEmpty());
+					});
+
+					it('should not restore required attribute if there are still tags after erasing a tag', function() {
+						input.val('tag1, tag2');
+						input.attr('required', '');
+						tag.tagify('#tags');
+						type(input.first(), BACKSPACE);
+						type(input.first(), BACKSPACE);
+						assert.ok(input.filter('required').isEmpty());
+					});
+
+					it('should not put required attribute after erasing last tag if the input was not required', function() {
+						input.val('tag');
+						tag.tagify('#tags');
+						type(input.first(), BACKSPACE);
+						type(input.first(), BACKSPACE);
+						assert.ok(input.filter('required').isEmpty());
+					});
+				});
+
+				describe('Updating maxlength', function() {
+					beforeEach(function() {
+						$('#test').html('<input id="tags" name="tags-name">')
+						input = $('#test').find('#tags');
+					});
+
+					it('should not update maxlength after adding a tag if maxlength is not present', function() {
+						assert.isNull(input.attr('maxlength'));
+						input.val('tag');
+						tag.tagify('#tags');
+						assert.isNull(input.attr('maxlength'));
+					});
+
+					it('should update maxlength after adding a single tag if maxlength is present', function() {
+						input.val('tag');
+						input.attr('maxlength', '200');
+						tag.tagify('#tags');
+						assert.equal(input.attr('maxlength'), '197');
+					});
+
+					it('should update maxlength after adding a second tag if maxlength is present', function() {
+						var tag1 = 'tag1',
+							tag2 = 'tag2',
+							separatorLength = 1,
+							initialMaxlength = 200,
+							finalMaxlength = initialMaxlength - tag1.length - separatorLength - tag2.length;
+
+						input.val(tag1);
+						input.attr('maxlength', '200');
+						tag.tagify('#tags');
+						input.val(tag2);
+						type(input.first(), COMMA);
+						assert.equal(input.attr('maxlength'), finalMaxlength);
+					});
+
+					it('should not update maxlength after removing a tag if maxlength is not present', function() {
+						assert.isNull(input.attr('maxlength'));
+						input.val('tag');
+						tag.tagify('#tags');
+						type(input.first(), BACKSPACE);
+						type(input.first(), BACKSPACE);
+						assert.isNull(input.attr('maxlength'));
+					});
+
+					it('should update maxlength after removing last tag if maxlength is present', function() {
+						input.val('tag');
+						input.attr('maxlength', '200');
+						tag.tagify('#tags');
+						type(input.first(), BACKSPACE);
+						type(input.first(), BACKSPACE);
+						assert.equal(input.attr('maxlength'), '200');
+					});
+
+					it('should update maxlength after removing not the last tag if maxlength is present', function() {
+						var tag1 = 'tag1',
+							tag2 = 'tag2',
+							separator = ',',
+							initialMaxlength = 200,
+							intermediateMaxlength = initialMaxlength - tag1.length - separator.length - tag2.length,
+							finalMaxlength = initialMaxlength - tag1.length;
+
+						input.val(tag1 + separator + tag2);
+						input.attr('maxlength', initialMaxlength);
+						tag.tagify('#tags');
+						assert.equal(input.attr('maxlength'), intermediateMaxlength);
+						type(input.first(), BACKSPACE);
+						type(input.first(), BACKSPACE);
+						assert.equal(input.attr('maxlength'), finalMaxlength);
+					});
+				});
+			});
+			describe('Callbacks', function() {
 				beforeEach(function() {
 					$('#test').html('<input id="tags" name="tags-name">')
 					input = $('#test').find('#tags');
 				});
 
-				it('should keep required attribute when activating without tags', function() {
-					input.val('');
-					input.attr('required', '');
-					tag.tagify('#tags');
-					assert.notOk(input.filter('required').isEmpty());
-				});
-
-				it('should keep required attribute when typing without tags', function() {
-					input.val('');
-					input.attr('required', '');
-					tag.tagify('#tags');
-					type(input.first(), CHAR_A);
-					assert.notOk(input.filter('required').isEmpty());
-				});
-
-				it('should remove required attribute when add tag', function() {
-					input.attr('required', '');
+				it('should call errorCleared callback with input as argument when removing error class', function(done) {
 					input.val('tag');
-					tag.tagify('#tags');
-					assert.ok(input.filter('required').isEmpty());
-				});
-
-				it('should remove required attribute after typing first tag', function() {
-					input.val('');
-					input.attr('required', '');
-					tag.tagify('#tags');
-					type(input.first(), CHAR_A);
+					tag.tagify('#tags', {
+						errorCleared: function(parameter) {
+							assert.equal(parameter, input.first());
+							done();
+						}
+					});
+					input.val('tag');
 					type(input.first(), COMMA);
-					assert.ok(input.filter('required').isEmpty());
+					type(input.first(), CHAR_A);
 				});
 
-				it('should restore required attribute after erasing last tag', function() {
+				it('should call error callback with input as argument when adding error class', function(done) {
 					input.val('tag');
-					input.attr('required', '');
-					tag.tagify('#tags');
-					type(input.first(), BACKSPACE);
-					type(input.first(), BACKSPACE);
-					assert.notOk(input.filter('required').isEmpty());
-				});
-
-				it('should not restore required attribute if there are still tags after erasing a tag', function() {
-					input.val('tag1, tag2');
-					input.attr('required', '');
-					tag.tagify('#tags');
-					type(input.first(), BACKSPACE);
-					type(input.first(), BACKSPACE);
-					assert.ok(input.filter('required').isEmpty());
-				});
-
-				it('should not put required attribute after erasing last tag if the input was not required', function() {
+					tag.tagify('#tags', {
+						error: function(parameter) {
+							assert.equal(parameter, input.first());
+							done();
+						}
+					});
 					input.val('tag');
-					tag.tagify('#tags');
-					type(input.first(), BACKSPACE);
-					type(input.first(), BACKSPACE);
-					assert.ok(input.filter('required').isEmpty());
-				});
-
-				it('should not update maxlength after adding a tag if maxlength is not present', function() {
-					assert.isNull(input.attr('maxlength'));
-					input.val('tag');
-					tag.tagify('#tags');
-					assert.isNull(input.attr('maxlength'));
-				});
-
-				it('should update maxlength after adding a single tag if maxlength is present', function() {
-					input.val('tag');
-					input.attr('maxlength', '200');
-					tag.tagify('#tags');
-					assert.equal(input.attr('maxlength'), '197');
-				});
-
-				it('should update maxlength after adding a second tag if maxlength is present', function() {
-					var tag1 = 'tag1',
-						tag2 = 'tag2',
-						separatorLength = 1,
-						initialMaxlength = 200,
-						finalMaxlength = initialMaxlength - tag1.length - separatorLength - tag2.length;
-
-					input.val(tag1);
-					input.attr('maxlength', '200');
-					tag.tagify('#tags');
-					input.val(tag2);
 					type(input.first(), COMMA);
-					assert.equal(input.attr('maxlength'), finalMaxlength);
 				});
 
-				it('should not update maxlength after removing a tag if maxlength is not present', function() {
-					assert.isNull(input.attr('maxlength'));
+				it('should not call added callback when adding error class', function() {
+					var calls = 0;
 					input.val('tag');
-					tag.tagify('#tags');
-					type(input.first(), BACKSPACE);
-					type(input.first(), BACKSPACE);
-					assert.isNull(input.attr('maxlength'));
-				});
-
-				it('should update maxlength after removing last tag if maxlength is present', function() {
+					tag.tagify('#tags', {
+						added: function() {
+							assert.lessThan(++calls, 2, 'number of calls should be less than 2');
+						}
+					});
 					input.val('tag');
-					input.attr('maxlength', '200');
-					tag.tagify('#tags');
-					type(input.first(), BACKSPACE);
-					type(input.first(), BACKSPACE);
-					assert.equal(input.attr('maxlength'), '200');
+					type(input.first(), ENTER);
 				});
 
-				it('should update maxlength after removing not the last tag if maxlength is present', function() {
-					var tag1 = 'tag1',
-						tag2 = 'tag2',
-						separator = ',',
-						initialMaxlength = 200,
-						intermediateMaxlength = initialMaxlength - tag1.length - separator.length - tag2.length,
-						finalMaxlength = initialMaxlength - tag1.length;
+				it('should not call error callback when adding a tag', function() {
+					input.val('tag1');
+					tag.tagify('#tags', {
+						error: function() {
+							assert.fail('called error callback', 'should not call');
+						}
+					});
+					input.val('tag2');
+					type(input.first(), COMMA);
+				});
 
-					input.val(tag1 + separator + tag2);
-					input.attr('maxlength', initialMaxlength);
-					tag.tagify('#tags');
-					assert.equal(input.attr('maxlength'), intermediateMaxlength);
+				it('should call added callback with new tags as argument when adding a tag', function(done) {
+					tag.tagify('#tags', {
+						added: function(parameter) {
+							assert.deepEqual(['tag1', 'tag2'], parameter);
+							done();
+						}
+					});
+					input.val('tag1,tag2');
+					type(input.first(), ENTER);
+				});
+
+				it('should call removed callback with removed tag as argument when removing a tag', function(done) {
+					input.val('tag1,tag2');
+					tag.tagify('#tags', {
+						removed: function(parameter) {
+							assert.equal('tag2', parameter);
+							done();
+						}
+					});
 					type(input.first(), BACKSPACE);
 					type(input.first(), BACKSPACE);
-					assert.equal(input.attr('maxlength'), finalMaxlength);
+				});
+
+				it('should not call removed callback when trying to remove tags but has no tags', function() {
+					tag.tagify('#tags', {
+						removed: function() {
+							assert.fail('called removed callback', 'should not call');
+						}
+					});
+					type(input.first(), BACKSPACE);
+					type(input.first(), BACKSPACE);
 				});
 			});
 		});

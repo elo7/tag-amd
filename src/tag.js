@@ -7,7 +7,8 @@ define('tag', ['doc'], function($) {
 		BACKSPACE = 8,
 		DELETE = 46,
 		LEFT_KEY = 37,
-		RIGHT_KEY = 39;
+		RIGHT_KEY = 39,
+		EXACT_MAXLENGTH_ATTR = 'data-tag-exact-maxlength';
 
 	var isKeyPressed = function(event, key) {
 		return event.which === key || event.keyCode === key;
@@ -124,7 +125,12 @@ define('tag', ['doc'], function($) {
 
 			if (elementMaxlength) {
 				var computedMaxlength = parseInt(elementMaxlength, 10) - tag.length - 1;
-				$element.attr('maxlength', Math.max(0, computedMaxlength));
+				if (computedMaxlength < 0) {
+					$element.attr(EXACT_MAXLENGTH_ATTR, 'true');
+					$element.attr('maxlength', 0);
+				} else {
+					$element.attr('maxlength', computedMaxlength);
+				}
 				if (computedMaxlength <= 0 && options && options.maxlengthExceeded && options.maxlengthExceeded.call) {
 					options.maxlengthExceeded.call(null);
 				}
@@ -157,8 +163,9 @@ define('tag', ['doc'], function($) {
 				if (elementMaxlength) {
 					var numericMaxlength = parseInt(elementMaxlength, 10),
 						computedMaxlength = numericMaxlength + tagToRemove.length + 1;
-					if (numericMaxlength === 0) {
+					if (numericMaxlength === 0 && $element.attr(EXACT_MAXLENGTH_ATTR)) {
 						computedMaxlength--;
+						$element.removeAttr(EXACT_MAXLENGTH_ATTR);
 					}
 					$element.attr('maxlength', computedMaxlength);
 				}

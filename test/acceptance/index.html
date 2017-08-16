@@ -513,6 +513,24 @@
 						assert.equal(input.attr('maxlength'), '20');
 					});
 
+					it('should update maxlength consistently after missing maxlength by one', function() {
+						input.val('senhor,vasco,thiago');
+						input.attr('maxlength', '20');
+						tag.tagify('#tags');
+						// cannot fit tags anymore
+						assert.equal(input.attr('maxlength'), '0');
+						// remove first
+						type(input.first(), BACKSPACE);
+						type(input.first(), BACKSPACE);
+						// remove second
+						type(input.first(), BACKSPACE);
+						type(input.first(), BACKSPACE);
+						// remove third
+						type(input.first(), BACKSPACE);
+						type(input.first(), BACKSPACE);
+						assert.equal(input.attr('maxlength'), '20');
+					});
+
 					it('should not update maxlength after removing a tag if maxlength is not present', function() {
 						assert.isNull(input.attr('maxlength'));
 						input.val('tag');

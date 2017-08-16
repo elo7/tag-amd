@@ -48,7 +48,7 @@ define('tag', ['doc'], function($) {
 			}
 			if ($element.val() !== '' && isAnyOfTheseKeysPressed(e, [ENTER, COMMA, TAB])) {
 				e.preventDefault();
-				addTags();
+				addTags(e);
 			} else if (selectedTag !== null && isAnyOfTheseKeysPressed(e, [BACKSPACE, DELETE])) {
 				removeTag(selectedTag);
 				selectedTag = null;
@@ -90,13 +90,13 @@ define('tag', ['doc'], function($) {
 			return previousArray;
 		};
 
-		var addTags = function() {
+		var addTags = function(event) {
 			var tagsToAdd = $element.val().trim().split(/\s*,\s*/).filter(function(tag) {
 				return tag.length > 0 && tags.indexOf(tag.trim()) < 0;
 			}).reduce(filterUniques, []);
 			if(tagsToAdd.length > 0) {
 				for(var i = 0; i < tagsToAdd.length; i++) {
-					addTag(tagsToAdd[i]);
+					addTag(tagsToAdd[i], event);
 				}
 				$element.val('');
 				if (options && options.added && options.added.call) {
@@ -110,7 +110,7 @@ define('tag', ['doc'], function($) {
 			}
 		};
 
-		var addTag = function(tag) {
+		var addTag = function(tag, event) {
 			var $li = $(document.createElement('li')),
 				$input = $(document.createElement('input')),
 				$closeButton = $(document.createElement('button')),
@@ -131,7 +131,7 @@ define('tag', ['doc'], function($) {
 				} else {
 					$element.attr('maxlength', computedMaxlength);
 				}
-				if (computedMaxlength <= 0 && options && options.maxlengthExceeded && options.maxlengthExceeded.call) {
+				if (computedMaxlength <= 0 && event && options && options.maxlengthExceeded && options.maxlengthExceeded.call) {
 					options.maxlengthExceeded.call(null);
 				}
 			}

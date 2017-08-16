@@ -655,17 +655,28 @@
 				});
 
 				it('should call maxlengthExceeded callback when reaching input maxlength limit', function(done) {
-					input.val('senhoru,vasco,thiago');
 					input.attr('maxlength', '20');
 					tag.tagify('#tags', {
 						maxlengthExceeded: function() {
 							done();
 						}
 					});
+					input.val('senhoru,vasco,thiago');
+					type(input.first(), ENTER);
 				});
 
 				it('should not call maxlengthExceeded callback when adding tags but not reaching input maxlength limit', function() {
 					input.val('senhoru,vasco,thi');
+					input.attr('maxlength', '20');
+					tag.tagify('#tags', {
+						maxlengthExceeded: function() {
+							assert.fail('called maxlengthExceeded callback', 'should not call');
+						}
+					});
+				});
+
+				it('should not call maxlengthExceeded callback when loading', function() {
+					input.val('senhoru,vasco,thiago');
 					input.attr('maxlength', '20');
 					tag.tagify('#tags', {
 						maxlengthExceeded: function() {

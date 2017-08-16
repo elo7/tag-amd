@@ -500,6 +500,7 @@
 					input.attr('required', '');
 					tag.tagify('#tags');
 					type(input.first(), BACKSPACE);
+					type(input.first(), BACKSPACE);
 					assert.ok(input.filter('required').isEmpty());
 				});
 
@@ -507,7 +508,72 @@
 					input.val('tag');
 					tag.tagify('#tags');
 					type(input.first(), BACKSPACE);
+					type(input.first(), BACKSPACE);
 					assert.ok(input.filter('required').isEmpty());
+				});
+
+				it('should not update maxlength after adding a tag if maxlength is not present', function() {
+					assert.isNull(input.attr('maxlength'));
+					input.val('tag');
+					tag.tagify('#tags');
+					assert.isNull(input.attr('maxlength'));
+				});
+
+				it('should update maxlength after adding a single tag if maxlength is present', function() {
+					input.val('tag');
+					input.attr('maxlength', '200');
+					tag.tagify('#tags');
+					assert.equal(input.attr('maxlength'), '197');
+				});
+
+				it('should update maxlength after adding a second tag if maxlength is present', function() {
+					var tag1 = 'tag1',
+						tag2 = 'tag2',
+						separatorLength = 1,
+						initialMaxlength = 200,
+						finalMaxlength = initialMaxlength - tag1.length - separatorLength - tag2.length;
+
+					input.val(tag1);
+					input.attr('maxlength', '200');
+					tag.tagify('#tags');
+					input.val(tag2);
+					type(input.first(), COMMA);
+					assert.equal(input.attr('maxlength'), finalMaxlength);
+				});
+
+				it('should not update maxlength after removing a tag if maxlength is not present', function() {
+					assert.isNull(input.attr('maxlength'));
+					input.val('tag');
+					tag.tagify('#tags');
+					type(input.first(), BACKSPACE);
+					type(input.first(), BACKSPACE);
+					assert.isNull(input.attr('maxlength'));
+				});
+
+				it('should update maxlength after removing last tag if maxlength is present', function() {
+					input.val('tag');
+					input.attr('maxlength', '200');
+					tag.tagify('#tags');
+					type(input.first(), BACKSPACE);
+					type(input.first(), BACKSPACE);
+					assert.equal(input.attr('maxlength'), '200');
+				});
+
+				it('should update maxlength after removing not the last tag if maxlength is present', function() {
+					var tag1 = 'tag1',
+						tag2 = 'tag2',
+						separator = ',',
+						initialMaxlength = 200,
+						intermediateMaxlength = initialMaxlength - tag1.length - separator.length - tag2.length,
+						finalMaxlength = initialMaxlength - tag1.length;
+
+					input.val(tag1 + separator + tag2);
+					input.attr('maxlength', initialMaxlength);
+					tag.tagify('#tags');
+					assert.equal(input.attr('maxlength'), intermediateMaxlength);
+					type(input.first(), BACKSPACE);
+					type(input.first(), BACKSPACE);
+					assert.equal(input.attr('maxlength'), finalMaxlength);
 				});
 			});
 		});

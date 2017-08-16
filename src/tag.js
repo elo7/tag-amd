@@ -112,7 +112,8 @@ define('tag', ['doc'], function($) {
 		var addTag = function(tag) {
 			var $li = $(document.createElement('li')),
 				$input = $(document.createElement('input')),
-				$closeButton = $(document.createElement('button'));
+				$closeButton = $(document.createElement('button')),
+				elementMaxlength = $element.attr('maxlength');
 			$closeButton.attr('type', 'button').addClass('close').html('&times;');
 			$input.attr('type', 'hidden').attr('name', $element.attr('name')).val(tag);
 			$li.text(tag);
@@ -120,6 +121,14 @@ define('tag', ['doc'], function($) {
 			$li.append($closeButton.first());
 			$tagList.first().insertBefore($li.first(), $inputContainer.first());
 			$element.removeAttr('required');
+
+			if (elementMaxlength) {
+				var tagLength = tag.length;
+				if (tags.length > 0) {
+					tagLength++;
+				}
+				$element.attr('maxlength', parseInt(elementMaxlength) - tagLength);
+			}
 
 			$closeButton.on('click', function(e) {
 				e.stopImmediatePropagation();
@@ -140,9 +149,18 @@ define('tag', ['doc'], function($) {
 		};
 
 		var removeTag = function(index) {
-			if(tags.splice(index, 1).length > 0) {
-				var tag = $tagList.find('.tag').els[index];
+			var tagToRemove = tags[index];
+			if (tags.splice(index, 1).length > 0) {
+				var tag = $tagList.find('.tag').els[index],
+					elementMaxlength = $element.attr('maxlength');
 				$(tag).removeItem();
+				if (elementMaxlength) {
+					var tagLength = tagToRemove.length;
+					if (tags.length > 0) {
+						tagLength++;
+					}
+					$element.attr('maxlength', parseInt(elementMaxlength) + tagLength);
+				}
 			}
 			if (isRequired && tags.length === 0) {
 				$element.attr('required', '');

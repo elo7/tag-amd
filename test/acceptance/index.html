@@ -490,6 +490,29 @@
 						assert.equal(input.attr('maxlength'), finalMaxlength);
 					});
 
+					it('should not allow negative values for maxlength when adding tags', function() {
+						input.val('senhoru,vasco,thiago');
+						input.attr('maxlength', '20');
+						tag.tagify('#tags');
+						assert.equal(input.attr('maxlength'), '0');
+					});
+
+					it('should update maxlength consistently after reaching maxlength', function() {
+						input.val('senhoru,vasco,thiago');
+						input.attr('maxlength', '20');
+						tag.tagify('#tags');
+						// remove first
+						type(input.first(), BACKSPACE);
+						type(input.first(), BACKSPACE);
+						// remove second
+						type(input.first(), BACKSPACE);
+						type(input.first(), BACKSPACE);
+						// remove third
+						type(input.first(), BACKSPACE);
+						type(input.first(), BACKSPACE);
+						assert.equal(input.attr('maxlength'), '20');
+					});
+
 					it('should not update maxlength after removing a tag if maxlength is not present', function() {
 						assert.isNull(input.attr('maxlength'));
 						input.val('tag');

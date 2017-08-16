@@ -123,7 +123,8 @@ define('tag', ['doc'], function($) {
 			$element.removeAttr('required');
 
 			if (elementMaxlength) {
-				$element.attr('maxlength', parseInt(elementMaxlength) - tag.length - 1);
+				var computedMaxlength = parseInt(elementMaxlength, 10) - tag.length - 1;
+				$element.attr('maxlength', Math.max(0, computedMaxlength));
 			}
 
 			$closeButton.on('click', function(e) {
@@ -151,7 +152,12 @@ define('tag', ['doc'], function($) {
 					elementMaxlength = $element.attr('maxlength');
 				$(tag).removeItem();
 				if (elementMaxlength) {
-					$element.attr('maxlength', parseInt(elementMaxlength) + tagToRemove.length + 1);
+					var numericMaxlength = parseInt(elementMaxlength, 10),
+						computedMaxlength = numericMaxlength + tagToRemove.length + 1;
+					if (numericMaxlength === 0) {
+						computedMaxlength--;
+					}
+					$element.attr('maxlength', computedMaxlength);
 				}
 			}
 			if (isRequired && tags.length === 0) {

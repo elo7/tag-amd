@@ -115,7 +115,7 @@ define('tag', ['doc'], function($) {
 				$input = $(document.createElement('input')),
 				$closeButton = $(document.createElement('button')),
 				elementMaxlength = $element.attr('maxlength');
-			$closeButton.attr('type', 'button').addClass('close').html('&times;');
+			$closeButton.attr('type', 'button').attr('tabindex', '-1').addClass('close').html('&times;');
 			$input.attr('type', 'hidden').attr('name', $element.attr('name')).val(tag);
 			$li.text(tag);
 			$li.addClass('tag').append($input.first());

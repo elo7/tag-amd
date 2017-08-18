@@ -91,7 +91,8 @@ define('tag', ['doc'], function($) {
 		};
 
 		var addTags = function(event) {
-			var tagsToAdd = $element.val().trim().split(/\s*,\s*/).filter(function(tag) {
+			var value = $element.val() || $element.text();
+			var tagsToAdd = value.trim().split(/\s*,\s*/).filter(function(tag) {
 				return tag.length > 0 && tags.indexOf(tag.trim()) < 0;
 			}).reduce(filterUniques, []);
 			if(tagsToAdd.length > 0) {
@@ -102,7 +103,7 @@ define('tag', ['doc'], function($) {
 				if (options && options.added && options.added.call) {
 					options.added.call(null, tagsToAdd);
 				}
-			} else {
+			} else if (value.trim().length > 0) {
 				$element.addClass('error');
 				if (options && options.error && options.error.call) {
 					options.error.call(null, $element.first());

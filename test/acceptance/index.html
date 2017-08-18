@@ -391,12 +391,18 @@
 			});
 
 			describe('Validation', function() {
-				describe('Updating required attribute', function() {
-					beforeEach(function() {
-						$('#test').html('<input id="tags" name="tags-name">')
-						input = $('#test').find('#tags');
-					});
+				beforeEach(function() {
+					$('#test').html('<input id="tags" name="tags-name">')
+					input = $('#test').find('#tags');
+				});
 
+				describe('At startup', function() {
+					it('should not trigger error if field is required and there are no tags', function() {
+						tag.tagify('#tags');
+						assert.notOk(input.hasClass('error'));
+					})
+				})
+				describe('Updating required attribute', function() {
 					it('should keep required attribute when activating without tags', function() {
 						input.val('');
 						input.attr('required', '');
@@ -456,11 +462,6 @@
 				});
 
 				describe('Updating maxlength', function() {
-					beforeEach(function() {
-						$('#test').html('<input id="tags" name="tags-name">')
-						input = $('#test').find('#tags');
-					});
-
 					it('should not update maxlength after adding a tag if maxlength is not present', function() {
 						assert.isNull(input.attr('maxlength'));
 						input.val('tag');

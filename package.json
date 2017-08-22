@@ -5,7 +5,10 @@
   "main": "tag.js",
   "scripts": {
     "test": "bash test.sh",
-    "test:server": "node test/acceptance/test_server.js"
+    "test:server": "node test/acceptance/test_server.js",
+    "build:js": "minify src/tag.js -o dist/tag.min.js --compress drop_console=true --mangle --screw-ie8",
+    "build:css": "minify src/tag.css -o dist/tag.min.css",
+    "build": "npm run build:js && npm run build:css"
   },
   "repository": {
     "type": "git",
@@ -30,6 +33,7 @@
   "devDependencies": {
     "bower": "1.7.9",
     "express": "4.15.4",
+    "minifier": "0.8.1",
     "mocha": "3.5.0",
     "mocha-phantomjs": "4.1.0",
     "phantomjs-prebuilt": "2.1.14",

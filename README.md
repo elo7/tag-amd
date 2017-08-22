@@ -28,6 +28,8 @@ In your HTML file, import the library and its dependencies (assuming you are usi
 <script src='tag.js' async></script>
 ```
 
+**Important:** `events-amd` its a `doc-amd` [dependency](https://github.com/elo7/doc-amd/#dependencies).
+
 Create a form control for your user to type the tags using either `<input>` or `<textarea>`:
 
 ```html
@@ -67,7 +69,7 @@ where `options` is an object that may contain the following callbacks:
 
 - `added(addedTags)`: called when one or more tags are added to the list of tags; receives an array with the new tags as argument
 - `removed(removedTag)`: called when a tag is removed from the list; receives the removed tag as argument
-- `error(tagInput)`: called when the user tries to add a tag that already exists in the list; receives the input as argument
+- `errorAlreadyExists(tagInput)`: called when the user tries to add a tag that already exists in the list; receives the input as argument
 - `errorCleared(tagInput)`: called when the user edits the tag field after an error; receives the input as argument
 - `maxlengthExceeded()`: called when the input's maxlength is reached after adding a tag, **not** when the user is typing the tags; receives no arguments
 

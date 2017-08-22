@@ -105,8 +105,8 @@ define('tag', ['doc'], function($) {
 				}
 			} else if (value.trim().length > 0) {
 				$element.addClass('error');
-				if (options && options.error && options.error.call) {
-					options.error.call(null, $element.first());
+				if (options && options.errorAlreadyExists && options.errorAlreadyExists.call) {
+					options.errorAlreadyExists.call(null, $element.first());
 				}
 			}
 		};

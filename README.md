@@ -15,7 +15,7 @@ bower install tag-amd
 npm install elo7-tag-amd
 ```
 
-In the download package, there will be a JavaScript file (`tag.js`) and a CSS file (`tag.css`). The JavaScript file is not minified, but we strongly recommend minifying it before production usage. The CSS file is optional; you may use it as a reference for your own styling.
+In the download package, there will be a JavaScript file (`dist/tag.min.js`) and a CSS file (`dist/tag.min.css`). The CSS file is optional; you may use it as a reference for your own styling.
 
 ## Usage
 

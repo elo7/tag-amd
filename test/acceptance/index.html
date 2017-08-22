@@ -587,10 +587,10 @@
 					type(input.first(), CHAR_A);
 				});
 
-				it('should call error callback with input as argument when adding error class', function(done) {
+				it('should call errorAlreadyExists callback with input as argument when adding error class', function(done) {
 					input.val('tag');
 					tag.tagify('#tags', {
-						error: function(parameter) {
+						errorAlreadyExists: function(parameter) {
 							assert.equal(parameter, input.first());
 							done();
 						}
@@ -611,11 +611,11 @@
 					type(input.first(), ENTER);
 				});
 
-				it('should not call error callback when adding a tag', function() {
+				it('should not call errorAlreadyExists callback when adding a tag', function() {
 					input.val('tag1');
 					tag.tagify('#tags', {
-						error: function() {
-							assert.fail('called error callback', 'should not call');
+						errorAlreadyExists: function() {
+							assert.fail('called errorAlreadyExists callback', 'should not call');
 						}
 					});
 					input.val('tag2');

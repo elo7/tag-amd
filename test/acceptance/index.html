@@ -9,14 +9,16 @@
 <body>
 	<section id='test'>
 		<h1>Tag AMD</h1>
-		<input id="tags" name="tags-name" autofocus>
+		<input id="tags" name="tags-name">
 	</section>
 	<script src="define-async/async-define.js"></script>
 	<script src="elo7-events-amd/events-amd.js"></script>
 	<script src="elo7-doc-amd/doc.js"></script>
 	<script src="tag.js"></script>
 	<script>
+		window.tag = null;
 		define(['doc', 'tag'], function($, tag) {
+			window.tag = tag;
 			tag.tagify('#tags');
 		});
 	</script>

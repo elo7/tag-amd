@@ -37,6 +37,10 @@
 	background-color: gray;
 }
 
+.tags-container input[required] {
+	border: 1px solid blueviolet;
+}
+
 .tags-container input {
 	outline: 0;
 	border: 0;

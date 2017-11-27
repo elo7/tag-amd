@@ -258,4 +258,178 @@ describe('Tag AMD', () => {
             cy.focused().should('have.attr', 'name', 'tags-name');
         });
     });
+
+    context('Validation', () => {
+        beforeEach(() => {
+            cy.visit('/?test=when_tagging');
+        });
+
+        describe('At startup', () => {
+            it('should not trigger error if field is required and there are no tags', () => {
+                cy.get('#tags').should('not.have.class', 'error');
+            });
+        });
+
+        describe('Updating required attribute', () => {
+            it('should keep required attribute when activating without tags', () => {
+                cy.get('#tags').type('{enter}');
+                cy.get('#tags').invoke('attr', 'required', 'required');
+                cy.get('#tags').should('have.id', 'tags').and('have.value.length', 0);
+            });
+
+            it('should keep required attribute when typing without tags', () => {
+                cy.get('#tags').type('{enter}');
+                cy.get('#tags').type('A');
+                cy.get('#tags').invoke('attr', 'required', 'required');
+                cy.get('#tags').should('have.attr', 'required').and('have.value.length', 0);
+            });
+
+            it('should remove required attribute when add tag', () => {
+                cy.get('#tags').invoke('attr', 'required', 'required');
+                cy.get('#tags').type('tag{enter}');
+                cy.get('#tags').should('not.have.attr', 'required').and('have.value.length', 0);
+            });
+
+            it('should remove required attribute after typing first tag', () => {
+                cy.get('#tags').invoke('attr', 'required', 'required');
+                cy.get('#tags').type('{enter}');
+                cy.get('#tags').type('A,');
+                cy.get('#tags').should('not.have.attr', 'required').and('have.value.length', 0);
+            });
+
+            it('should restore required attribute after erasing last tag', () => {
+                cy.get('#tags').type('tag{enter}');
+                cy.get('#tags').invoke('attr', 'required', 'required');
+                cy.get('#tags').type('{backspace}{backspace}');
+                cy.get('#tags').should('have.attr', 'required');
+            });
+
+            it('should not restore required attribute if there are still tags after erasing a tag', () => {
+                cy.get('#tags').invoke('attr', 'required', 'required');
+                cy.get('#tags').type('tag1, tag2{enter}');
+                cy.get('#tags').type('{backspace}{backspace}');
+                cy.get('#tags').should('not.have.attr', 'required');
+            });
+
+            it('should not put required attribute after erasing last tag if the input was not required', () => {
+                cy.get('#tags').invoke('removeAttr', 'required');
+                cy.get('#tags').type('tag{enter}');
+                cy.get('#tags').type('{backspace}{backspace}');
+                cy.get('#tags').should('not.have.attr', 'required');
+            });
+        });
+
+        describe('Updating maxlength', () => {
+            it('should not update maxlength after adding a tag if maxlength is not present', () => {
+                cy.get('#tags').should('not.have.attr', 'maxlength');
+                cy.get('#tags').type('tag{enter}');
+                cy.get('#tags').should('not.have.attr', 'maxlength');
+            });
+
+            it('should update maxlength accounting for the separator after adding a single tag if maxlength is present', () => {
+                cy.get('#tags').invoke('attr', 'maxlength', '200');
+                cy.get('#tags').type('tag{enter}');
+                cy.get('#tags').should('have.attr', 'maxlength').and('eq', '196');
+            });
+
+            it('should update maxlength after adding a second tag if maxlength is present', () => {
+                let tag1 = 'tag1',
+                    tag2 = 'tag2',
+                    separatorLength = 1,
+                    initialMaxlength = 200,
+                    finalMaxlength = initialMaxlength - tag1.length - separatorLength - tag2.length - separatorLength;
+                cy.get('#tags').invoke('attr', 'maxlength', '200');
+                cy.get('#tags').type(`${tag1}{enter}`);
+                cy.get('#tags').type(`${tag2},`);
+                cy.get('#tags').should('have.attr', 'maxlength').and('eq', `${finalMaxlength}`);
+            });
+
+            it('should not allow negative values for maxlength when adding tags', () => {
+                cy.get('#tags').invoke('attr', 'maxlength', '20');
+                cy.get('#tags').type('senhoru,vasco,thiago{enter}');
+                cy.get('#tags').should('have.attr', 'maxlength').and('eq', '0');
+            });
+
+            it('should update maxlength consistently after reaching maxlength', () => {
+                cy.get('#tags').invoke('attr', 'maxlength', '20');
+                cy.get('#tags').type('senhoru,vasco,thiago{enter}');
+                cy.get('#tags').type('{backspace}{backspace}'); // remove first
+                cy.get('#tags').type('{backspace}{backspace}'); // remove second
+                cy.get('#tags').type('{backspace}{backspace}'); // remove third
+                cy.get('#tags').should('have.attr', 'maxlength').and('eq', '20');
+            });
+
+            it('should update maxlength consistently after missing maxlength by one', () => {
+                cy.get('#tags').invoke('attr', 'maxlength', '20');
+                cy.get('#tags').type('senhoru,vasco,thiago{enter}');
+                cy.get('#tags').should('have.attr', 'maxlength').and('eq', '0');
+                cy.get('#tags').type('{backspace}{backspace}'); // remove first
+                cy.get('#tags').type('{backspace}{backspace}'); // remove second
+                cy.get('#tags').type('{backspace}{backspace}'); // remove third
+                cy.get('#tags').should('have.attr', 'maxlength').and('eq', '20');
+            });
+
+            it('should not update maxlength after removing a tag if maxlength is not present', () => {
+                cy.get('#tags').should('not.have.attr', 'maxlength');
+                cy.get('#tags').type('tag{enter}');
+                cy.get('#tags').type('{backspace}{backspace}');
+                cy.get('#tags').should('not.have.attr', 'maxlength');
+            });
+
+            it('should update maxlength after removing last tag if maxlength is present', () => {
+                cy.get('#tags').invoke('attr', 'maxlength', '200');
+                cy.get('#tags').type('tag{enter}');
+                cy.get('#tags').type('{backspace}{backspace}');
+                cy.get('#tags').should('have.attr', 'maxlength').and('eq', '200');
+            });
+
+            it('should update maxlength after removing not the last tag if maxlength is present', () => {
+                var tag1 = 'tag1',
+                    tag2 = 'tag2',
+                    separator = ',',
+                    initialMaxlength = 200,
+                    intermediateMaxlength = initialMaxlength - tag1.length - separator.length - tag2.length - separator.length,
+                    finalMaxlength = initialMaxlength - tag1.length - separator.length;
+
+                cy.get('#tags').invoke('attr', 'maxlength', `${initialMaxlength}`);
+                cy.get('#tags').type(`${tag1}${separator}${tag2}{enter}`);
+                cy.get('#tags').should('have.attr', 'maxlength').and('eq', `${intermediateMaxlength}`);
+                cy.get('#tags').type('{backspace}{backspace}');
+                cy.get('#tags').should('have.attr', 'maxlength').and('eq', `${finalMaxlength}`);
+            });
+        });
+    });
+
+    context('Callbacks', () => {
+        beforeEach(() => {
+        });
+
+        it('should call errorCleared callback with input as argument when removing error class', function() {
+            cy.visit('/?test=callbacks', { onLoad: (win) => cy.stub(win, 'tag') });
+
+            cy.get('#tags').type('errorCleared');
+
+            cy.window().then((win) => {
+                cy.spy(win.tag, 'tagify');
+                let args = ['#tags', { errorCleared: function (parameter) { } }]
+                win.tag.tagify(...args);
+                expect(win.tag.tagify).to.be.calledOnce
+                expect(win.tag.tagify).to.be.calledWithExactly(...args);
+            });
+        });
+
+        it('should call errorAlreadyExists callback with input as argument when adding error class', function() {
+            cy.visit('/?test=callbacks', { onLoad: (win) => cy.stub(win, 'tag') });
+
+            cy.get('#tags').type('errorAlreadyExists');
+
+            cy.window().then((win) => {
+                cy.spy(win.tag, 'tagify');
+                let args = ['#tags', { errorAlreadyExists: function (parameter) { } }]
+                win.tag.tagify(...args);
+                expect(win.tag.tagify).to.be.calledOnce
+                expect(win.tag.tagify).to.be.calledWithExactly(...args);
+            });
+        });
+    });
 });

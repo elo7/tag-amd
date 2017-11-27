@@ -8,7 +8,8 @@
     "test:server": "node test/acceptance/test_server.js",
     "build:js": "minify src/tag.js -o dist/tag.min.js --compress drop_console=true --mangle --screw-ie8",
     "build:css": "minify src/tag.css -o dist/tag.min.css",
-    "build": "npm run build:js && npm run build:css"
+    "build": "npm run build:js && npm run build:css",
+    "cypress:open": "cypress open"
   },
   "repository": {
     "type": "git",
@@ -32,6 +33,7 @@
   },
   "devDependencies": {
     "bower": "1.7.9",
+    "cypress": "^1.1.2",
     "express": "4.15.4",
     "minifier": "0.8.1",
     "mocha": "3.5.0",

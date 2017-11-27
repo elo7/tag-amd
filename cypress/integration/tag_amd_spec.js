@@ -160,10 +160,102 @@ describe('Tag AMD', () => {
             cy.get('.tags .tag.selected').should('have.contain', 'another');
         });
 
-        it('should remove tag when close button was clicked', function () {
+        it('should remove tag when close button was clicked', () => {
             cy.get('#tags').type('tag1, another{enter}');
             cy.get('.tags .tag:first-child .close').click();
             cy.get('.tags .tag').should('have.length', 1);
+        });
+    });
+
+    context('When tagging', () => {
+        beforeEach(() => {
+            cy.visit('/?test=when_tagging');
+        });
+
+        it('should add a new li with tag as value', () => {
+            cy.get('.tags .tag').should('have.length', 0);
+            cy.get('#tags').type('tag{enter}');
+            cy.get('.tags .tag').should('have.length', 1);
+            cy.get('input[value="tag"]').should('have.value', 'tag');
+        });
+
+        it('should add a another li with another tag as value', () => {
+            cy.get('.tags .tag').should('have.length', 0);
+            cy.get('#tags').type('tag, another-tag,');
+            cy.get('.tags .tag').should('have.length', 2);
+            cy.get('input[value="tag"]').should('have.value', 'tag');
+            cy.get('input[value="another-tag"]').should('have.value', 'another-tag');
+        });
+
+        it('should add an error class when trying to add repeated tag', () => {
+            cy.get('#tags').type('tag');
+            cy.get('.tags .tag').should('have.length', 0);
+            cy.get('#tags').type(',');
+            cy.get('.tags .tag').should('have.length', 1);
+            cy.get('#tags').type('tag');
+            cy.get('#tags').type(',');
+            cy.get('#tags').should('have.class', 'error');
+            cy.get('.tags .tag').should('have.length', 1);
+        });
+
+        it('should remove error class when trying to add repeated tag and typing another letter', () => {
+            cy.get('#tags').type('tag{enter}');
+            cy.get('.tags .tag').should('have.length', 1);
+            cy.get('#tags').type('tag{enter}');
+            cy.get('#tags').type(',');
+            cy.get('#tags').should('have.class', 'error');
+            cy.get('#tags').type('A');
+            cy.get('#tags').should('not.have.class', 'error');
+        });
+
+        it('should focus on second tag when typing left arrow key', () => {
+            cy.get('#tags').type('tag1, tag2{enter}');
+            cy.get('#tags').type('{leftarrow}');
+            cy.get('.tags .tag.selected').should('have.contain', 'tag2');
+            cy.get('.tags .tag.selected input').should('have.value', 'tag2');
+        });
+
+        it('should focus on first tag when typing left arrow key two times', () => {
+            cy.get('#tags').type('tag1, tag2{enter}');
+            cy.get('#tags').type('{leftarrow}');
+            cy.get('#tags').type('{leftarrow}');
+            cy.get('.tags .tag.selected').should('have.contain', 'tag1');
+            cy.get('.tags .tag.selected input').should('have.value', 'tag1');
+        });
+
+        it('should remove first tag when typing left arrow key two times and pressing backspace', () => {
+            cy.get('#tags').type('tag1, tag2');
+            cy.get('#tags').type('{leftarrow}');
+            cy.get('#tags').type('{leftarrow}');
+            cy.get('#tags').type('{backspace}');
+            cy.get('.tags .tag').should('have.length', 1);
+            cy.get('input[value="tag1"]').should('be.exist');
+            cy.get('input[value="tag2"]').should('not.exist');
+        });
+
+        it('should remove first tag when typing left arrow key two times and pressing delete', () => {
+            cy.get('#tags').type('tag1, tag2');
+            cy.get('#tags').type('{leftarrow}');
+            cy.get('#tags').type('{leftarrow}');
+            cy.get('#tags').type('{del}');
+            cy.get('.tags .tag').should('have.length', 1);
+            cy.get('input[value="tag1"]').should('be.exist');
+            cy.get('input[value="tag2"]').should('not.exist');
+        });
+
+        it('should not add empty tag', () => {
+            cy.get('#tags').type(' ');
+            cy.get('#tags').type('{enter}');
+            cy.get('.tags .tag').should('have.length', 0);
+        });
+
+        it('should focus tag field if last tag is selected and right key is pressed', () => {
+            cy.get('#tags').type('tag{enter}');
+            cy.get('.tags .tag').click();
+            cy.get('.tags .tag').should('have.class', 'selected');
+            cy.get('#tags').type('{rightarrow}');
+            cy.get('.tags .tag').should('not.have.class', 'selected');
+            cy.focused().should('have.attr', 'name', 'tags-name');
         });
     });
 });

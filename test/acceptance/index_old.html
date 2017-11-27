@@ -306,88 +306,88 @@
 					input = $('#test').find('#tags');
 				});
 
-				it('should add a new li with tag as value', function() {
-					input.val('tag');
-					tag.tagify('#tags');
-					assert.notOk($('input[value="tag"]').isEmpty());
-				});
+				// it('should add a new li with tag as value', function() {
+				// 	input.val('tag');
+				// 	tag.tagify('#tags');
+				// 	assert.notOk($('input[value="tag"]').isEmpty());
+				// });
 
-				it('should add a another li with another tag as value', function() {
-					input.val('tag, another-tag');
-					tag.tagify('#tags');
-					assert.notOk($('input[value="tag"]').isEmpty());
-					assert.notOk($('input[value="another-tag"]').isEmpty());
-				});
+				// it('should add a another li with another tag as value', function() {
+				// 	input.val('tag, another-tag');
+				// 	tag.tagify('#tags');
+				// 	assert.notOk($('input[value="tag"]').isEmpty());
+				// 	assert.notOk($('input[value="another-tag"]').isEmpty());
+				// });
 
-				it('should add an error class when trying to add repeated tag', function() {
-					input.val('tag');
-					tag.tagify('#tags');
-					input.val('tag');
-					type(input.first(), COMMA);
-					assert.equal($('.tags').find('.tag').size, 1);
-					assert.ok(input.hasClass('error'));
-				});
+				// it('should add an error class when trying to add repeated tag', function() {
+				// 	input.val('tag');
+				// 	tag.tagify('#tags');
+				// 	input.val('tag');
+				// 	type(input.first(), COMMA);
+				// 	assert.equal($('.tags').find('.tag').size, 1);
+				// 	assert.ok(input.hasClass('error'));
+				// });
 
-				it('should remove error class when trying to add repeated tag and typing another letter', function() {
-					input.val('tag');
-					tag.tagify('#tags');
-					input.val('tag');
-					type(input.first(), COMMA);
-					type(input.first(), CHAR_A);
-					assert.equal($('.tags').find('.tag').size, 1);
-					assert.notOk(input.hasClass('error'));
-				});
+				// it('should remove error class when trying to add repeated tag and typing another letter', function() {
+				// 	input.val('tag');
+				// 	tag.tagify('#tags');
+				// 	input.val('tag');
+				// 	type(input.first(), COMMA);
+				// 	type(input.first(), CHAR_A);
+				// 	assert.equal($('.tags').find('.tag').size, 1);
+				// 	assert.notOk(input.hasClass('error'));
+				// });
 
-				it('should focus on second tag when typing left arrow key', function() {
-					input.val('tag, tag2');
-					tag.tagify('#tags');
-					type(input.first(), LEFT_KEY);
-					assert.equal($('.tag.selected').first(), $('input[value="tag2"]').parent().first());
-				});
+				// it('should focus on second tag when typing left arrow key', function() {
+				// 	input.val('tag, tag2');
+				// 	tag.tagify('#tags');
+				// 	type(input.first(), LEFT_KEY);
+				// 	assert.equal($('.tag.selected').first(), $('input[value="tag2"]').parent().first());
+				// });
 
-				it('should focus on first tag when typing left arrow key two times', function() {
-					input.val('tag, tag2');
-					tag.tagify('#tags');
-					type(input.first(), LEFT_KEY);
-					type(input.first(), LEFT_KEY);
-					assert.equal($('.tag.selected').first(), $('input[value="tag"]').parent().first());
-				});
+				// it('should focus on first tag when typing left arrow key two times', function() {
+				// 	input.val('tag, tag2');
+				// 	tag.tagify('#tags');
+				// 	type(input.first(), LEFT_KEY);
+				// 	type(input.first(), LEFT_KEY);
+				// 	assert.equal($('.tag.selected').first(), $('input[value="tag"]').parent().first());
+				// });
 
-				it('should remove first tag when typing left arrow key two times and pressing backspace', function() {
-					input.val('tag, tag2');
-					tag.tagify('#tags');
-					type(input.first(), LEFT_KEY);
-					type(input.first(), LEFT_KEY);
-					type(input.first(), BACKSPACE);
-					assert.equal($('.tag').size, 1);
-					assert.notOk($('input[value="tag2"]').isEmpty());
-				});
+				// it('should remove first tag when typing left arrow key two times and pressing backspace', function() {
+				// 	input.val('tag, tag2');
+				// 	tag.tagify('#tags');
+				// 	type(input.first(), LEFT_KEY);
+				// 	type(input.first(), LEFT_KEY);
+				// 	type(input.first(), BACKSPACE);
+				// 	assert.equal($('.tag').size, 1);
+				// 	assert.notOk($('input[value="tag2"]').isEmpty());
+				// });
 
-				it('should remove first tag when typing left arrow key two times and pressing delete', function() {
-					input.val('tag, tag2');
-					tag.tagify('#tags');
-					type(input.first(), LEFT_KEY);
-					type(input.first(), LEFT_KEY);
-					type(input.first(), DELETE);
-					assert.equal($('.tag').size, 1);
-					assert.notOk($('input[value="tag2"]').isEmpty());
-				});
+				// it('should remove first tag when typing left arrow key two times and pressing delete', function() {
+				// 	input.val('tag, tag2');
+				// 	tag.tagify('#tags');
+				// 	type(input.first(), LEFT_KEY);
+				// 	type(input.first(), LEFT_KEY);
+				// 	type(input.first(), DELETE);
+				// 	assert.equal($('.tag').size, 1);
+				// 	assert.notOk($('input[value="tag2"]').isEmpty());
+				// });
 
-				it('should not add empty tag', function() {
-					input.val(' ');
-					tag.tagify('#tags');
-					type(input.first(), ENTER);
-					assert.equal($('.tag').size, 0);
-				});
+				// it('should not add empty tag', function() {
+				// 	input.val(' ');
+				// 	tag.tagify('#tags');
+				// 	type(input.first(), ENTER);
+				// 	assert.equal($('.tag').size, 0);
+				// });
 
-				it('should focus tag field if last tag is selected and right key is pressed', function() {
-					input.val('tag');
-					tag.tagify('#tags');
-					click($('input[value="tag"]').parent().first());
-					assert.notEqual(input.first(), document.activeElement);
-					type(input.closest('.tags-container').first(), RIGHT_KEY);
-					assert.equal(input.first(), document.activeElement);
-				});
+				// it('should focus tag field if last tag is selected and right key is pressed', function() {
+				// 	input.val('tag');
+				// 	tag.tagify('#tags');
+				// 	click($('input[value="tag"]').parent().first());
+				// 	assert.notEqual(input.first(), document.activeElement);
+				// 	type(input.closest('.tags-container').first(), RIGHT_KEY);
+				// 	assert.equal(input.first(), document.activeElement);
+				// });
 			});
 
 			describe('Validation', function() {

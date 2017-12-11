@@ -401,35 +401,210 @@ describe('Tag AMD', () => {
     });
 
     context('Callbacks', () => {
+        let tag = null,
+            errorCalled = false,
+            callback = {},
+            win = null
+
         beforeEach(() => {
+            cy.visit('/?test=callbacks');
+            cy.window().then((w) => win = w);
         });
 
-        it('should call errorCleared callback with input as argument when removing error class', function() {
-            cy.visit('/?test=callbacks', { onLoad: (win) => cy.stub(win, 'tag') });
-
-            cy.get('#tags').type('errorCleared');
-
-            cy.window().then((win) => {
-                cy.spy(win.tag, 'tagify');
-                let args = ['#tags', { errorCleared: function (parameter) { } }]
-                win.tag.tagify(...args);
-                expect(win.tag.tagify).to.be.calledOnce
-                expect(win.tag.tagify).to.be.calledWithExactly(...args);
-            });
+        afterEach(() => {
+            tag = null,
+            errorCalled = false,
+            callback = {},
+            win = null;
         });
 
-        it('should call errorAlreadyExists callback with input as argument when adding error class', function() {
-            cy.visit('/?test=callbacks', { onLoad: (win) => cy.stub(win, 'tag') });
+        it('should call errorCleared callback with input as argument when removing error class', () => {
+            callback.errorCleared = (param) => {
+                expect(errorCalled).to.be.false;
+                errorCalled = true;
+                expect(errorCalled).to.be.true;
+                expect(callback.errorCleared).to.always.be.calledWith(param);
+            };
+            cy.spy(callback, 'errorCleared');
 
-            cy.get('#tags').type('errorAlreadyExists');
+            cy.get('#tags').type('tag{enter}');
+            win.define(['doc', 'tag'], ($, t) => tag = t);
 
-            cy.window().then((win) => {
-                cy.spy(win.tag, 'tagify');
-                let args = ['#tags', { errorAlreadyExists: function (parameter) { } }]
-                win.tag.tagify(...args);
-                expect(win.tag.tagify).to.be.calledOnce
-                expect(win.tag.tagify).to.be.calledWithExactly(...args);
-            });
+            cy.spy(tag, 'tagify');
+            let args = ['#tags', callback];
+            tag.tagify(...args);
+            expect(tag.tagify).to.have.calledOnce;
+            expect(tag.tagify).to.be.calledWithExactly(...args);
+
+            cy.get('#tags').type('tag');
+            cy.get('#tags').type(',');
+            cy.get('#tags').type('A');
+        });
+
+        it('should call errorAlreadyExists callback with input as argument when adding error class', () => {
+            callback.errorAlreadyExists = (param) => {
+                expect(errorCalled).to.be.false;
+                errorCalled = true;
+                expect(errorCalled).to.be.true;
+                expect(callback.errorAlreadyExists).to.always.be.calledWith(param);
+            };
+            cy.spy(callback, 'errorAlreadyExists');
+
+            cy.get('#tags').type('tag{enter}');
+            win.define(['doc', 'tag'], ($, t) => tag = t);
+
+            cy.spy(tag, 'tagify');
+            let args = ['#tags', callback];
+            tag.tagify(...args);
+            expect(tag.tagify).to.be.called;
+            expect(tag.tagify).to.be.calledWithExactly(...args);
+
+            cy.get('#tags').type('tag{enter}');
+        });
+
+        it('should not call errorAlreadyExists callback when adding a tag', () => {
+            callback.errorAlreadyExists = () => {
+                expect(callback.errorAlreadyExists).not.to.be.called;
+            };
+            cy.spy(callback, 'errorAlreadyExists');
+
+            cy.get('#tags').type('tag1{enter}');
+            win.define(['doc', 'tag'], ($, t) => tag = t);
+
+            cy.spy(tag, 'tagify');
+            let args = ['#tags', callback];
+            tag.tagify(...args);
+            expect(tag.tagify).to.be.called;
+            expect(tag.tagify).to.be.calledWithExactly(...args);
+
+            cy.get('#tags').type('tag2,');
+        });
+
+        it('should not call added callback when adding error class', () => {
+            let calls = 0;
+            callback.added = () => {
+                expect(calls).to.be.lessThan(2);
+            };
+            cy.spy(callback, 'added');
+
+            win.define(['doc', 'tag'], ($, t) => tag = t);
+
+            cy.spy(tag, 'tagify');
+            let args = ['#tags', callback];
+            tag.tagify(...args);
+            expect(tag.tagify).to.have.calledOnce;
+            expect(tag.tagify).to.be.calledWithExactly(...args);
+
+            cy.get('#tags').type('tag{enter}');
+            cy.get('#tags').type('tag,');
+        });
+
+        it('should call added callback with new tags as argument when adding a tag', () => {
+            callback.added = (param) => {
+                expect(callback.added).to.have.calledWith(param);
+            };
+            cy.spy(callback, 'added');
+
+            win.define(['doc', 'tag'], ($, t) => tag = t);
+
+            cy.spy(tag, 'tagify');
+            let args = ['#tags', callback];
+            tag.tagify(...args);
+            expect(tag.tagify).to.have.calledOnce;
+            expect(tag.tagify).to.be.calledWithExactly(...args);
+
+            cy.get('#tags').type('tag1,tag2');
+            cy.get('#tags').type('{enter}');
+        });
+
+        it('should call removed callback with removed tag as argument when removing a tag', () => {
+            callback.removed = (param) => {
+                expect(callback.removed).to.have.calledWith(param);
+            };
+            cy.spy(callback, 'removed');
+
+            win.define(['doc', 'tag'], ($, t) => tag = t);
+
+            cy.get('#tags').type('tag1,tag2,');
+            cy.spy(tag, 'tagify');
+            let args = ['#tags', callback];
+            tag.tagify(...args);
+            expect(tag.tagify).to.have.calledOnce;
+            expect(tag.tagify).to.be.calledWithExactly(...args);
+
+            cy.get('#tags').type('{backspace}');
+            cy.get('#tags').type('{backspace}');
+        });
+
+        it('should not call removed callback when trying to remove tags but has no tags', () => {
+            callback.removed = (param) => {
+                expect(callback.removed).not.to.have.calledWith(param);
+            };
+            cy.spy(callback, 'removed');
+
+            win.define(['doc', 'tag'], ($, t) => tag = t);
+
+            cy.spy(tag, 'tagify');
+            let args = ['#tags', callback];
+            tag.tagify(...args);
+            expect(tag.tagify).to.have.calledOnce;
+            expect(tag.tagify).to.be.calledWithExactly(...args);
+
+            cy.get('#tags').type('{backspace}');
+            cy.get('#tags').type('{backspace}');
+        });
+
+        it('should call maxlengthExceeded callback when reaching input maxlength limit', () => {
+            callback.maxlengthExceeded = () => {
+                expect(callback.maxlengthExceeded).to.be.called;
+            };
+            cy.spy(callback, 'maxlengthExceeded');
+
+            win.define(['doc', 'tag'], ($, t) => tag = t);
+
+            cy.get('#tags').invoke('attr', 'maxlength', '10');
+            cy.spy(tag, 'tagify');
+            let args = ['#tags', callback];
+            tag.tagify(...args);
+            expect(tag.tagify).to.have.calledOnce;
+            expect(tag.tagify).to.be.calledWithExactly(...args);
+
+            cy.get('#tags').type('senhoru,vasco,thiago');
+        });
+
+        it('should call maxlengthExceeded callback when reaching input maxlength limit', () => {
+            callback.maxlengthExceeded = () => {
+                expect(callback.maxlengthExceeded).to.be.called;
+            };
+            cy.spy(callback, 'maxlengthExceeded');
+
+            win.define(['doc', 'tag'], ($, t) => tag = t);
+
+            cy.get('#tags').invoke('attr', 'maxlength', '20');
+            cy.spy(tag, 'tagify');
+            let args = ['#tags', callback];
+            tag.tagify(...args);
+            cy.get('#tags').type('senhoru,vasco,thiago,');
+            expect(tag.tagify).to.have.calledOnce;
+            expect(tag.tagify).to.be.calledWithExactly(...args);
+        });
+
+        it('should not call maxlengthExceeded callback when loading', () => {
+            callback.maxlengthExceeded = () => {
+                console.log('here 3');
+                expect(callback.maxlengthExceeded).not.to.be.called;
+            };
+            cy.spy(callback, 'maxlengthExceeded');
+
+            win.define(['doc', 'tag'], ($, t) => tag = t);
+
+            cy.get('#tags').type('senhoru,vasco,thiago,');
+            cy.get('#tags').invoke('attr', 'maxlength', '20');
+            cy.spy(tag, 'tagify');
+            let args = ['#tags', callback];
+            tag.tagify(...args);
+            expect(tag.tagify).to.have.calledOnce;
+            expect(tag.tagify).to.be.calledWithExactly(...args);
         });
     });
 });

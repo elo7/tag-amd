@@ -16,11 +16,11 @@
 	<script src="elo7-doc-amd/doc.js"></script>
 	<script src="tag.js"></script>
 	<script>
-		window.tag = null;
-		define(['doc', 'tag'], function($, tag) {
-			window.tag = tag;
-			tag.tagify('#tags');
-		});
+		if(!location.search.match(/callbacks$/)) {
+			define(['doc', 'tag'], function($, tag) {
+				tag.tagify('#tags');
+			});
+		}
 	</script>
 </body>
 </html>

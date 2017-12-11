@@ -73,6 +73,22 @@ where `options` is an object that may contain the following callbacks:
 - `errorCleared(tagInput)`: called when the user edits the tag field after an error; receives the input as argument
 - `maxlengthExceeded()`: called when the input's maxlength is reached after adding a tag, **not** when the user is typing the tags; receives no arguments
 
+## E2E Tests
+
+For run the end-to-end tests, you can choose one of strategies below:
+
+### dev mode
+```bash
+$ npm run test:dev
+```
+Load one instance with the server and open the browser for run the tests.
+
+### cli mode
+```bash
+$ npm run test
+```
+Load one instance with the server and run the tests in bash.
+
 ## License
 
 tag-amd is released under the [BSD license](https://github.com/elo7/tag-amd/blob/master/LICENSE). Have at it.

@@ -1,4 +1,5 @@
 {
     "baseUrl": "http://localhost:4000",
-    "watchForFileChanges": true
+    "watchForFileChanges": true,
+    "videoRecording": false
 }

@@ -4,12 +4,14 @@
   "description": "Transform an input into a tag field",
   "main": "tag.js",
   "scripts": {
-    "test": "bash test.sh",
+    "test": "bash test_cli.sh",
+    "test:dev": "bash test_dev.sh",
     "test:server": "node test/acceptance/test_server.js",
     "build:js": "minify src/tag.js -o dist/tag.min.js --compress drop_console=true --mangle --screw-ie8",
     "build:css": "minify src/tag.css -o dist/tag.min.css",
     "build": "npm run build:js && npm run build:css",
-    "cypress:open": "cypress open"
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run"
   },
   "repository": {
     "type": "git",

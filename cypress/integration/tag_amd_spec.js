@@ -5,22 +5,25 @@ describe('Tag AMD', () => {
         });
 
         it('should create a new tag when a comma is typed', () => {
+            let tagValue = 'tag1';
             cy.get('.tags .tag').should('have.length', 0);
-            cy.get('#tags').type('tag1,');
+            cy.get('#tags').type(tagValue).type(',');
             cy.get('.tags .tag').should('have.length', 1);
+            cy.get('.tags .tag').should('have.contain', tagValue);
         });
 
         it('should not duplicate tag', () => {
+            let tagValue = 'tag1';
             cy.get('.tags .tag').should('have.length', 0);
-            cy.get('#tags').type('tag1,');
+            cy.get('#tags').type(tagValue).type(',');
             cy.get('.tags .tag').should('have.length', 1);
-            cy.get('#tags').type('tag1,');
+            cy.get('#tags').type(tagValue).type(',');
             cy.get('.tags .tag').should('have.length', 1);
         });
 
         it('should create a new tag when enter is typed', () => {
             cy.get('.tags .tag').should('have.length', 0);
-            cy.get('#tags').type('newtag1{enter}');
+            cy.get('#tags').type('newtag1').type('{enter}');
             cy.get('.tags .tag').should('have.length', 1);
         });
 
@@ -55,17 +58,19 @@ describe('Tag AMD', () => {
         });
 
         it('should add all tags in the input when comma is typed', () => {
+            let tagValues = 'tag1, another tag, yet another';
             cy.get('.tags .tag').should('have.length', 0);
-            cy.get('#tags').type('tag1, another tag');
-            cy.get('.tags .tag').should('have.length', 1);
+            cy.get('#tags').invoke('val', tagValues).trigger('change');
+            cy.get('.tags .tag').should('have.length', 0);
             cy.get('#tags').type(',');
-            cy.get('.tags .tag').should('have.length', 2);
+            cy.get('.tags .tag').should('have.length', 3);
         });
 
         it('should add all unique tags in the input when comma is typed and there are repeated tags', () => {
+            let tagValues = 'tag1, another tag, tag1, yet another';
             cy.get('.tags .tag').should('have.length', 0);
-            cy.get('#tags').type('tag1, another tag, tag1, yet another');
-            cy.get('.tags .tag').should('have.length', 2);
+            cy.get('#tags').invoke('val', tagValues).trigger('change');
+            cy.get('.tags .tag').should('have.length', 0);
             cy.get('#tags').type(',');
             cy.get('.tags .tag').should('have.length', 3);
         });
@@ -89,14 +94,14 @@ describe('Tag AMD', () => {
         });
 
         it('should have no selected tags after activated', () => {
-            cy.get('#tags').type('tag1, tag-to-remove{enter}');
+            cy.get('#tags').type('tag1').type(',').type('tag-to-remove').type('{enter}');
             cy.get('.tags .tag').should('have.length', 2);
             cy.get('.tags .tag.selected').should('have.length', 0);
         });
 
         it('should not select tags when pressing left key if input is filled', () => {
-            cy.get('#tags').type('tag1, another{enter}');
-            cy.get('#tags').type('tag2{leftarrow}');
+            cy.get('#tags').type('tag1').type(',').type('another').type('{enter}');
+            cy.get('#tags').type('x').type('{leftarrow}').type('{leftarrow}');
             cy.get('.tags .tag.selected').should('have.length', 0);
         });
 
@@ -426,8 +431,7 @@ describe('Tag AMD', () => {
                 expect(callback.errorCleared).to.always.be.calledWith(param);
             };
             cy.spy(callback, 'errorCleared');
-
-            cy.get('#tags').type('tag{enter}');
+            cy.get('#tags').type('tag').type('{enter}');
             win.define(['doc', 'tag'], ($, t) => tag = t);
 
             cy.spy(tag, 'tagify');
@@ -436,9 +440,7 @@ describe('Tag AMD', () => {
             expect(tag.tagify).to.have.calledOnce;
             expect(tag.tagify).to.be.calledWithExactly(...args);
 
-            cy.get('#tags').type('tag');
-            cy.get('#tags').type(',');
-            cy.get('#tags').type('A');
+            cy.get('#tags').type('tag').type(',').type('A');
         });
 
         it('should call errorAlreadyExists callback with input as argument when adding error class', () => {
@@ -459,7 +461,7 @@ describe('Tag AMD', () => {
             expect(tag.tagify).to.be.called;
             expect(tag.tagify).to.be.calledWithExactly(...args);
 
-            cy.get('#tags').type('tag{enter}');
+            cy.get('#tags').type('tag').type('{enter}');
         });
 
         it('should not call errorAlreadyExists callback when adding a tag', () => {
@@ -477,7 +479,7 @@ describe('Tag AMD', () => {
             expect(tag.tagify).to.be.called;
             expect(tag.tagify).to.be.calledWithExactly(...args);
 
-            cy.get('#tags').type('tag2,');
+            cy.get('#tags').type('tag2').type(',');
         });
 
         it('should not call added callback when adding error class', () => {
@@ -495,8 +497,7 @@ describe('Tag AMD', () => {
             expect(tag.tagify).to.have.calledOnce;
             expect(tag.tagify).to.be.calledWithExactly(...args);
 
-            cy.get('#tags').type('tag{enter}');
-            cy.get('#tags').type('tag,');
+            cy.get('#tags').type('tag').type('{enter}').type('tag').type(',');
         });
 
         it('should call added callback with new tags as argument when adding a tag', () => {
@@ -513,8 +514,7 @@ describe('Tag AMD', () => {
             expect(tag.tagify).to.have.calledOnce;
             expect(tag.tagify).to.be.calledWithExactly(...args);
 
-            cy.get('#tags').type('tag1,tag2');
-            cy.get('#tags').type('{enter}');
+            cy.get('#tags').type('tag1').type(',').type(',').type('tag2').type('{enter}');
         });
 
         it('should call removed callback with removed tag as argument when removing a tag', () => {
@@ -525,15 +525,14 @@ describe('Tag AMD', () => {
 
             win.define(['doc', 'tag'], ($, t) => tag = t);
 
-            cy.get('#tags').type('tag1,tag2,');
+            cy.get('#tags').type('tag1').type('tag2').type(',');
             cy.spy(tag, 'tagify');
             let args = ['#tags', callback];
             tag.tagify(...args);
             expect(tag.tagify).to.have.calledOnce;
             expect(tag.tagify).to.be.calledWithExactly(...args);
 
-            cy.get('#tags').type('{backspace}');
-            cy.get('#tags').type('{backspace}');
+            cy.get('#tags').type('{backspace}').type('{backspace}');
         });
 
         it('should not call removed callback when trying to remove tags but has no tags', () => {
@@ -550,8 +549,7 @@ describe('Tag AMD', () => {
             expect(tag.tagify).to.have.calledOnce;
             expect(tag.tagify).to.be.calledWithExactly(...args);
 
-            cy.get('#tags').type('{backspace}');
-            cy.get('#tags').type('{backspace}');
+            cy.get('#tags').type('{backspace}').type('{backspace}');
         });
 
         it('should call maxlengthExceeded callback when reaching input maxlength limit', () => {
@@ -563,13 +561,14 @@ describe('Tag AMD', () => {
             win.define(['doc', 'tag'], ($, t) => tag = t);
 
             cy.get('#tags').invoke('attr', 'maxlength', '10');
+
             cy.spy(tag, 'tagify');
             let args = ['#tags', callback];
             tag.tagify(...args);
             expect(tag.tagify).to.have.calledOnce;
             expect(tag.tagify).to.be.calledWithExactly(...args);
 
-            cy.get('#tags').type('senhoru,vasco,thiago');
+            cy.get('#tags').type('senhoru').type(',').type('vasco').type(',').type('thiago');
         });
 
         it('should call maxlengthExceeded callback when reaching input maxlength limit', () => {
@@ -581,10 +580,11 @@ describe('Tag AMD', () => {
             win.define(['doc', 'tag'], ($, t) => tag = t);
 
             cy.get('#tags').invoke('attr', 'maxlength', '20');
+
             cy.spy(tag, 'tagify');
             let args = ['#tags', callback];
             tag.tagify(...args);
-            cy.get('#tags').type('senhoru,vasco,thiago,');
+            cy.get('#tags').type('senhoru').type(',').type('vasco').type(',').type('thiago').type(',');
             expect(tag.tagify).to.have.calledOnce;
             expect(tag.tagify).to.be.calledWithExactly(...args);
         });
@@ -598,7 +598,7 @@ describe('Tag AMD', () => {
 
             win.define(['doc', 'tag'], ($, t) => tag = t);
 
-            cy.get('#tags').type('senhoru,vasco,thiago,');
+            cy.get('#tags').type('senhoru').type(',').type('vasco').type(',').type('thiago').type(',');
             cy.get('#tags').invoke('attr', 'maxlength', '20');
             cy.spy(tag, 'tagify');
             let args = ['#tags', callback];

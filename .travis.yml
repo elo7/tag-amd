@@ -3,10 +3,11 @@ node_js:
   - "7.10.1"
 cache:
   directories:
+    - ~/.npm
     - node_modules
 sudo:
   required
 install:
   - npm install
 script:
-  - bash test_cli.sh
+  - npm run test

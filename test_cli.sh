@@ -9,15 +9,8 @@ do
 		echo "port in use!";
 	else
 		echo "{\"baseUrl\":\"http://localhost:${random_port}\",\"watchForFileChanges\":true,\"videoRecording\":false}" > cypress.json
-		PORT=$random_port node test/acceptance/test_server.js & pid=$!
-		PID_LIST+=" $pid";
-		npm run cypress:run & pid=$!
-		PID_LIST+=" $pid";
-
-		trap "kill $PID_LIST" SIGINT
-		echo "Parallel processes have started";
-		wait $PID_LIST
-		echo "All processes have completed";
+		PORT=$random_port node test/acceptance/test_server.js & npm run cypress:run
 		((counter++))
 	fi
 done
+exit 0

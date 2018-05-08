@@ -34,7 +34,6 @@
     "elo7-doc-amd": "1.1.1"
   },
   "devDependencies": {
-    "bower": "1.7.9",
     "cypress": "2.1.0",
     "express": "4.15.4",
     "minifier": "0.8.1"

@@ -1,0 +1,13 @@
+language: node_js
+node_js:
+  - "7.10.1"
+cache:
+  directories:
+    - ~/.npm
+    - node_modules
+sudo:
+  required
+install:
+  - npm install
+script:
+  - npm run test

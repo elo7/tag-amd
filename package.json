@@ -36,6 +36,6 @@
     "mocha": "7.1.1",
     "mocha-chrome": "2.2.0",
     "proclaim": "3.6.0",
-    "terser": "4.6.7"
+    "terser": "4.8.0"
   }
 }

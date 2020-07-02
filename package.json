@@ -28,7 +28,7 @@
   "homepage": "https://github.com/elo7/tag-amd#readme",
   "dependencies": {
     "define-async": "1.3.2",
-    "elo7-doc-amd": "1.6.0"
+    "elo7-doc-amd": "1.7.0"
   },
   "devDependencies": {
     "clean-css-cli": "4.3.0",

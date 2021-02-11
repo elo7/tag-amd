@@ -31,7 +31,7 @@
     "elo7-doc-amd": "1.6.0"
   },
   "devDependencies": {
-    "clean-css-cli": "4.3.0",
+    "clean-css-cli": "5.0.1",
     "express": "4.17.1",
     "mocha": "7.1.1",
     "mocha-chrome": "2.2.0",
